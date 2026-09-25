@@ -1,0 +1,18 @@
+<div class="graph-container">
+
+  <h1>Synapse IA</h1>
+
+  <h2>Knowledge Graph</h2>
+
+  <button
+    type="button"
+    (click)="loadGraph()"
+  >
+    Cargar grafo
+  </button>
+
+  @if (graphData) {
+    <pre>{{ graphData | json }}</pre>
+  }
+
+</div>
