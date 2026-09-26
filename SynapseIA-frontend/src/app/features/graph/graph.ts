@@ -105,56 +105,79 @@ export class Graph implements AfterViewInit {
       this.cy.destroy();
     }
 
-    const nodes = this.graphData.nodes || [];
+    const nodes =
+      this.graphData.nodes || [];
 
     const relationships =
       this.graphData.relationships || [];
 
-    const elements: cytoscape.ElementDefinition[] = [];
+    const elements:
+      cytoscape.ElementDefinition[] = [];
 
     for (const node of nodes) {
 
       const properties =
         node.properties || {};
 
-      const id = this.getNodeId(
-        properties
-      );
+      const id =
+        this.getNodeId(properties);
 
-      const label = this.getNodeLabel(
-        properties,
-        node.labels
-      );
+      const label =
+        this.getNodeLabel(
+          properties,
+          node.labels
+        );
+
+      const nodeType =
+        this.getNodeType(
+          properties,
+          node.labels
+        );
 
       elements.push({
+
         data: {
           id,
-          label
+          label,
+          nodeType
         }
+
       });
     }
 
-    for (const relationship of relationships) {
+    for (
+      const relationship of relationships
+    ) {
 
-      const source = this.getNodeId(
-        relationship.source
-      );
+      const source =
+        this.getNodeId(
+          relationship.source
+        );
 
-      const target = this.getNodeId(
-        relationship.target
-      );
+      const target =
+        this.getNodeId(
+          relationship.target
+        );
 
       if (!source || !target) {
         continue;
       }
 
       elements.push({
+
         data: {
-          id: `${source}-${relationship.relation}-${target}`,
+
+          id:
+            `${source}-${relationship.relation}-${target}`,
+
           source,
+
           target,
-          label: relationship.relation
+
+          label:
+            relationship.relation
         }
+
       });
     }
 
@@ -166,24 +189,167 @@ export class Graph implements AfterViewInit {
       elements,
 
       layout: {
+
         name: 'cose',
+
         animate: true,
-        padding: 40
+
+        padding: 60,
+
+        nodeRepulsion: 12000,
+
+        idealEdgeLength: 140,
+
+        gravity: 0.25
       },
 
       style: [
+
         {
           selector: 'node',
 
           style: {
-            'background-color': '#6366f1',
-            'label': 'data(label)',
-            'color': '#ffffff',
-            'text-valign': 'center',
-            'text-halign': 'center',
-            'font-size': '11px',
-            'width': '45px',
-            'height': '45px'
+
+            'background-color':
+              '#6366f1',
+
+            'label':
+              'data(label)',
+
+            'color':
+              '#ffffff',
+
+            'text-valign':
+              'center',
+
+            'text-halign':
+              'center',
+
+            'font-size':
+              '10px',
+
+            'font-weight':
+              'bold',
+
+            'text-wrap':
+              'wrap',
+
+            'text-max-width':
+              '85px',
+
+            'width':
+              '42px',
+
+            'height':
+              '42px',
+
+            'border-width':
+              2,
+
+            'border-color':
+              '#ffffff'
+          }
+        },
+
+        {
+          selector:
+            'node[nodeType="DOCUMENT"]',
+
+          style: {
+
+            'background-color':
+              '#7c3aed',
+
+            'width':
+              '65px',
+
+            'height':
+              '65px',
+
+            'font-size':
+              '11px'
+          }
+        },
+
+        {
+          selector:
+            'node[nodeType="ENTITY"]',
+
+          style: {
+
+            'background-color':
+              '#2563eb'
+          }
+        },
+
+        {
+          selector:
+            'node[nodeType="PATTERN"]',
+
+          style: {
+
+            'background-color':
+              '#16a34a',
+
+            'width':
+              '52px',
+
+            'height':
+              '52px'
+          }
+        },
+
+        {
+          selector:
+            'node[nodeType="HYPOTHESIS"]',
+
+          style: {
+
+            'background-color':
+              '#f97316',
+
+            'width':
+              '58px',
+
+            'height':
+              '58px'
+          }
+        },
+
+        {
+          selector:
+            'node[nodeType="NUMBER"]',
+
+          style: {
+
+            'background-color':
+              '#64748b',
+
+            'width':
+              '35px',
+
+            'height':
+              '35px',
+
+            'font-size':
+              '9px'
+          }
+        },
+
+        {
+          selector:
+            'node[nodeType="METRIC"]',
+
+          style: {
+
+            'background-color':
+              '#0891b2',
+
+            'width':
+              '48px',
+
+            'height':
+              '48px'
           }
         },
 
@@ -191,27 +357,41 @@ export class Graph implements AfterViewInit {
           selector: 'edge',
 
           style: {
-            'width': 2,
-            'line-color': '#94a3b8',
-            'target-arrow-color': '#94a3b8',
-            'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier',
-            'label': 'data(label)',
-            'font-size': '8px',
-            'color': '#475569',
-            'text-rotation': 'autorotate'
+
+            'width':
+              1.5,
+
+            'line-color':
+              '#cbd5e1',
+
+            'target-arrow-color':
+              '#94a3b8',
+
+            'target-arrow-shape':
+              'triangle',
+
+            'curve-style':
+              'bezier'
           }
         },
 
         {
-          selector: 'node:selected',
+          selector:
+            'node:selected',
 
           style: {
-            'background-color': '#ec4899',
-            'border-width': 3,
-            'border-color': '#ffffff'
+
+            'background-color':
+              '#ec4899',
+
+            'border-width':
+              4,
+
+            'border-color':
+              '#ffffff'
           }
         }
+
       ]
     });
   }
@@ -237,7 +417,9 @@ export class Graph implements AfterViewInit {
       properties.title
     ) {
 
-      return `hypothesis-${properties.source_id}-${properties.title}`;
+      return (
+        `hypothesis-${properties.source_id}-${properties.title}`
+      );
     }
 
     if (
@@ -245,7 +427,9 @@ export class Graph implements AfterViewInit {
       properties.type
     ) {
 
-      return `entity-${properties.name}-${properties.type}`;
+      return (
+        `entity-${properties.name}-${properties.type}`
+      );
     }
 
     if (
@@ -253,7 +437,9 @@ export class Graph implements AfterViewInit {
       properties.description
     ) {
 
-      return `pattern-${properties.type}-${properties.description}`;
+      return (
+        `pattern-${properties.type}-${properties.description}`
+      );
     }
 
     return JSON.stringify(
@@ -282,10 +468,96 @@ export class Graph implements AfterViewInit {
       return properties.type;
     }
 
-    if (labels && labels.length > 0) {
+    if (
+      labels &&
+      labels.length > 0
+    ) {
+
       return labels[0];
     }
 
     return 'Nodo';
+  }
+
+  private getNodeType(
+    properties: any,
+    labels: string[]
+  ): string {
+
+    if (!properties) {
+      return 'ENTITY';
+    }
+
+    if (
+      properties.source_id !== undefined &&
+      properties.name
+    ) {
+
+      return 'DOCUMENT';
+    }
+
+    if (
+      properties.source_id !== undefined &&
+      properties.title
+    ) {
+
+      return 'HYPOTHESIS';
+    }
+
+    if (
+      properties.type &&
+      properties.description
+    ) {
+
+      return 'PATTERN';
+    }
+
+    if (
+      properties.type === 'NUMBER'
+    ) {
+
+      return 'NUMBER';
+    }
+
+    if (
+      properties.type === 'METRIC'
+    ) {
+
+      return 'METRIC';
+    }
+
+    if (
+      properties.name &&
+      properties.type
+    ) {
+
+      return 'ENTITY';
+    }
+
+    if (
+      labels &&
+      labels.includes('Document')
+    ) {
+
+      return 'DOCUMENT';
+    }
+
+    if (
+      labels &&
+      labels.includes('Hypothesis')
+    ) {
+
+      return 'HYPOTHESIS';
+    }
+
+    if (
+      labels &&
+      labels.includes('Pattern')
+    ) {
+
+      return 'PATTERN';
+    }
+
+    return 'ENTITY';
   }
 }
