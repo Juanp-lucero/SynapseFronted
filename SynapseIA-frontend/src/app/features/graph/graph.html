@@ -3,13 +3,20 @@
   <header class="graph-header">
 
     <div>
-      <h1>Synapse IA</h1>
-      <p>Knowledge Graph</p>
+
+      <h1>
+        Synapse IA
+      </h1>
+
+      <p>
+        Knowledge Graph
+      </p>
+
     </div>
 
     <button
-      type="button"
       class="load-button"
+      type="button"
       (click)="loadGraph()"
     >
       Cargar grafo
@@ -17,86 +24,139 @@
 
   </header>
 
-  <main class="graph-card">
 
-    <div
-      #graphContainer
-      class="graph-container"
-    ></div>
+  <main class="graph-content">
 
-  </main>
+    <section
+      class="graph-card"
+      [class.panel-open]="selectedNode"
+    >
 
-  @if (selectedNode) {
+      <div
+        #graphContainer
+        class="graph-container"
+      ></div>
 
-    <aside class="node-panel">
+    </section>
 
-      <div class="panel-header">
 
-        <div>
+    @if (selectedNode; as node) {
 
-          <span class="panel-label">
-            Nodo seleccionado
-          </span>
+      <aside class="node-panel">
 
-          <h2>
-            {{ selectedNode.label }}
-          </h2>
+        <div class="panel-header">
+
+          <div>
+
+            <span class="panel-label">
+              NODO SELECCIONADO
+            </span>
+
+            <h2>
+              {{ node.label }}
+            </h2>
+
+          </div>
+
+          <button
+            class="close-button"
+            type="button"
+            (click)="closeNodePanel()"
+          >
+            ×
+          </button>
 
         </div>
 
-        <button
-          type="button"
-          class="close-button"
-          (click)="selectedNode = null"
-        >
-          ×
-        </button>
 
-      </div>
+        <div class="node-type">
 
-      <div class="node-type">
+          <span>
+            Tipo
+          </span>
 
-        <span>Tipo</span>
+          <strong>
+            {{ node.type }}
+          </strong>
 
-        <strong>
-          {{ selectedNode.type }}
-        </strong>
+        </div>
 
-      </div>
 
-      <div class="properties">
+        <div class="properties-section">
 
-        <h3>Propiedades</h3>
+          <h3>
+            Propiedades
+          </h3>
 
-        @if (
-          selectedNode.properties
-        ) {
 
-          @for (
-            property of selectedNode.properties | keyvalue;
-            track property.key
-          ) {
+          @if (node.properties; as properties) {
 
-            <div class="property">
+            <div class="properties-list">
 
-              <span>
-                {{ property.key }}
-              </span>
+              @for (
+                property of properties | keyvalue;
+                track property.key
+              ) {
 
-              <p>
-                {{ property.value }}
-              </p>
+                <div class="property">
+
+                  <span class="property-name">
+                    {{ property.key }}
+                  </span>
+
+                  <span class="property-value">
+
+                    @if (
+                      property.value !== null &&
+                      property.value !== undefined
+                    ) {
+
+                      {{ property.value }}
+
+                    } @else {
+
+                      Sin información
+
+                    }
+
+                  </span>
+
+                </div>
+
+              }
+
+            </div>
+
+          } @else {
+
+            <div class="empty-properties">
+
+              Este nodo no contiene
+              propiedades adicionales.
 
             </div>
 
           }
 
-        }
+        </div>
 
-      </div>
 
-    </aside>
+        <div class="node-id">
 
-  }
+          <span>
+            ID del nodo
+          </span>
+
+          <code>
+            {{ node.id }}
+          </code>
+
+        </div>
+
+      </aside>
+
+    }
+
+  </main>
 
 </div>

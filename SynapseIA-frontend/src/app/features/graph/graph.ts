@@ -2,12 +2,11 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  ViewChild,
-  NgZone
+  NgZone,
+  ViewChild
 } from '@angular/core';
 
 import {
-  JsonPipe,
   KeyValuePipe
 } from '@angular/common';
 
@@ -20,7 +19,6 @@ import { GraphService } from '../../core/services/graph';
   selector: 'app-graph',
   standalone: true,
   imports: [
-    JsonPipe,
     KeyValuePipe
   ],
   templateUrl: './graph.html',
@@ -84,9 +82,13 @@ export class Graph implements AfterViewInit {
             data
           );
 
-          this.graphData = data;
+          this.ngZone.run(() => {
 
-          this.selectedNode = null;
+            this.graphData = data;
+
+            this.selectedNode = null;
+
+          });
 
           if (this.viewReady) {
             this.renderGraph();
@@ -101,6 +103,15 @@ export class Graph implements AfterViewInit {
           );
         }
       });
+  }
+
+  closeNodePanel(): void {
+
+    this.ngZone.run(() => {
+
+      this.selectedNode = null;
+
+    });
   }
 
   private renderGraph(): void {
@@ -241,7 +252,7 @@ export class Graph implements AfterViewInit {
               'center',
 
             'font-size':
-              '10px',
+              10,
 
             'font-weight':
               'bold',
@@ -253,16 +264,22 @@ export class Graph implements AfterViewInit {
               '85px',
 
             'width':
-              '42px',
+              42,
 
             'height':
-              '42px',
+              42,
 
             'border-width':
               2,
 
             'border-color':
-              '#ffffff'
+              '#ffffff',
+
+            'transition-property':
+              'background-color, border-width, width, height',
+
+            'transition-duration':
+              150
           }
         },
 
@@ -276,13 +293,13 @@ export class Graph implements AfterViewInit {
               '#7c3aed',
 
             'width':
-              '65px',
+              65,
 
             'height':
-              '65px',
+              65,
 
             'font-size':
-              '11px'
+              11
           }
         },
 
@@ -307,10 +324,10 @@ export class Graph implements AfterViewInit {
               '#16a34a',
 
             'width':
-              '52px',
+              52,
 
             'height':
-              '52px'
+              52
           }
         },
 
@@ -324,10 +341,10 @@ export class Graph implements AfterViewInit {
               '#f97316',
 
             'width':
-              '58px',
+              58,
 
             'height':
-              '58px'
+              58
           }
         },
 
@@ -341,13 +358,13 @@ export class Graph implements AfterViewInit {
               '#64748b',
 
             'width':
-              '35px',
+              35,
 
             'height':
-              '35px',
+              35,
 
             'font-size':
-              '9px'
+              9
           }
         },
 
@@ -361,10 +378,10 @@ export class Graph implements AfterViewInit {
               '#0891b2',
 
             'width':
-              '48px',
+              48,
 
             'height':
-              '48px'
+              48
           }
         },
 
@@ -403,7 +420,13 @@ export class Graph implements AfterViewInit {
               4,
 
             'border-color':
-              '#ffffff'
+              '#ffffff',
+
+            'width':
+              62,
+
+            'height':
+              62
           }
         }
 
@@ -435,7 +458,8 @@ export class Graph implements AfterViewInit {
               data.nodeType,
 
             properties:
-              data.properties
+              data.properties || {}
+
           };
 
           console.log(
@@ -460,7 +484,6 @@ export class Graph implements AfterViewInit {
             this.selectedNode = null;
 
           });
-
         }
       }
     );
