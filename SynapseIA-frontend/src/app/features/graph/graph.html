@@ -16,9 +16,78 @@
 
   </div>
 
-  <div
-    #graphContainer
-    class="graph-container"
-  ></div>
+  <div class="graph-layout">
+
+    <div
+      #graphContainer
+      class="graph-container"
+    ></div>
+
+    @if (selectedNode) {
+
+      <aside class="node-panel">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="panel-label">
+              Nodo seleccionado
+            </span>
+
+            <h2>
+              {{ selectedNode.label }}
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            class="close-button"
+            (click)="selectedNode = null"
+          >
+            ×
+          </button>
+
+        </div>
+
+        <div class="node-type">
+
+          <span>Tipo</span>
+
+          <strong>
+            {{ selectedNode.type }}
+          </strong>
+
+        </div>
+
+        <div class="properties">
+
+          <h3>Propiedades</h3>
+
+          @for (
+            property of selectedNode.properties | keyvalue;
+            track property.key
+          ) {
+
+            <div class="property">
+
+              <span>
+                {{ property.key }}
+              </span>
+
+              <p>
+                {{ property.value }}
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+      </aside>
+
+    }
+
+  </div>
 
 </div>

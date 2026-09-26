@@ -5,7 +5,10 @@ import {
   ViewChild
 } from '@angular/core';
 
-import { JsonPipe } from '@angular/common';
+import {
+  JsonPipe,
+  KeyValuePipe
+} from '@angular/common';
 
 import cytoscape from 'cytoscape';
 
@@ -15,7 +18,10 @@ import { GraphService } from '../../core/services/graph';
 @Component({
   selector: 'app-graph',
   standalone: true,
-  imports: [JsonPipe],
+  imports: [
+    JsonPipe,
+    KeyValuePipe
+  ],
   templateUrl: './graph.html',
   styleUrl: './graph.scss'
 })
@@ -25,6 +31,8 @@ export class Graph implements AfterViewInit {
   graphContainer!: ElementRef;
 
   graphData: any = null;
+
+  selectedNode: any = null;
 
   private cy: cytoscape.Core | null = null;
 
@@ -76,6 +84,8 @@ export class Graph implements AfterViewInit {
 
           this.graphData = data;
 
+          this.selectedNode = null;
+
           if (this.viewReady) {
             this.renderGraph();
           }
@@ -120,7 +130,9 @@ export class Graph implements AfterViewInit {
         node.properties || {};
 
       const id =
-        this.getNodeId(properties);
+        this.getNodeId(
+          properties
+        );
 
       const label =
         this.getNodeLabel(
@@ -139,7 +151,8 @@ export class Graph implements AfterViewInit {
         data: {
           id,
           label,
-          nodeType
+          nodeType,
+          properties
         }
 
       });
@@ -394,6 +407,52 @@ export class Graph implements AfterViewInit {
 
       ]
     });
+
+    this.cy.on(
+      'tap',
+      'node',
+      (event) => {
+
+        const node =
+          event.target;
+
+        const data =
+          node.data();
+
+        this.selectedNode = {
+
+          id:
+            data.id,
+
+          label:
+            data.label,
+
+          type:
+            data.nodeType,
+
+          properties:
+            data.properties
+        };
+
+        console.log(
+          'Nodo seleccionado:',
+          this.selectedNode
+        );
+      }
+    );
+
+    this.cy.on(
+      'tap',
+      (event) => {
+
+        if (
+          event.target === this.cy
+        ) {
+
+          this.selectedNode = null;
+        }
+      }
+    );
   }
 
   private getNodeId(
