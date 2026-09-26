@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   NgZone,
@@ -39,16 +40,15 @@ export class Graph implements AfterViewInit {
 
   constructor(
     private graphService: GraphService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngAfterViewInit(): void {
 
     this.viewReady = true;
 
-    if (this.graphData) {
-      this.renderGraph();
-    }
+    this.loadGraph();
   }
 
   loadGraph(): void {
@@ -88,11 +88,16 @@ export class Graph implements AfterViewInit {
 
             this.selectedNode = null;
 
+            this.changeDetectorRef.detectChanges();
+
+            if (this.viewReady) {
+
+              this.renderGraph();
+
+            }
+
           });
 
-          if (this.viewReady) {
-            this.renderGraph();
-          }
         },
 
         error: (error: any) => {
@@ -101,7 +106,9 @@ export class Graph implements AfterViewInit {
             'Error obteniendo el grafo:',
             error
           );
+
         }
+
       });
   }
 
@@ -111,7 +118,10 @@ export class Graph implements AfterViewInit {
 
       this.selectedNode = null;
 
+      this.changeDetectorRef.detectChanges();
+
     });
+
   }
 
   private renderGraph(): void {
@@ -125,7 +135,11 @@ export class Graph implements AfterViewInit {
     }
 
     if (this.cy) {
+
       this.cy.destroy();
+
+      this.cy = null;
+
     }
 
     const nodes =
@@ -159,6 +173,10 @@ export class Graph implements AfterViewInit {
           node.labels
         );
 
+      if (!id) {
+        continue;
+      }
+
       elements.push({
 
         data: {
@@ -169,11 +187,10 @@ export class Graph implements AfterViewInit {
         }
 
       });
+
     }
 
-    for (
-      const relationship of relationships
-    ) {
+    for (const relationship of relationships) {
 
       const source =
         this.getNodeId(
@@ -202,9 +219,11 @@ export class Graph implements AfterViewInit {
 
           label:
             relationship.relation
+
         }
 
       });
+
     }
 
     this.cy = cytoscape({
@@ -227,6 +246,7 @@ export class Graph implements AfterViewInit {
         idealEdgeLength: 140,
 
         gravity: 0.25
+
       },
 
       style: [
@@ -273,14 +293,10 @@ export class Graph implements AfterViewInit {
               2,
 
             'border-color':
-              '#ffffff',
+              '#ffffff'
 
-            'transition-property':
-              'background-color, border-width, width, height',
-
-            'transition-duration':
-              150
           }
+
         },
 
         {
@@ -300,7 +316,9 @@ export class Graph implements AfterViewInit {
 
             'font-size':
               11
+
           }
+
         },
 
         {
@@ -311,7 +329,9 @@ export class Graph implements AfterViewInit {
 
             'background-color':
               '#2563eb'
+
           }
+
         },
 
         {
@@ -328,7 +348,9 @@ export class Graph implements AfterViewInit {
 
             'height':
               52
+
           }
+
         },
 
         {
@@ -345,7 +367,9 @@ export class Graph implements AfterViewInit {
 
             'height':
               58
+
           }
+
         },
 
         {
@@ -365,7 +389,9 @@ export class Graph implements AfterViewInit {
 
             'font-size':
               9
+
           }
+
         },
 
         {
@@ -382,7 +408,9 @@ export class Graph implements AfterViewInit {
 
             'height':
               48
+
           }
+
         },
 
         {
@@ -404,7 +432,9 @@ export class Graph implements AfterViewInit {
 
             'curve-style':
               'bezier'
+
           }
+
         },
 
         {
@@ -427,10 +457,13 @@ export class Graph implements AfterViewInit {
 
             'height':
               62
+
           }
+
         }
 
       ]
+
     });
 
     this.cy.on(
@@ -444,30 +477,36 @@ export class Graph implements AfterViewInit {
         const data =
           node.data();
 
+        const selectedNode = {
+
+          id:
+            data.id,
+
+          label:
+            data.label,
+
+          type:
+            data.nodeType,
+
+          properties:
+            data.properties || {}
+
+        };
+
+        console.log(
+          'Nodo seleccionado:',
+          selectedNode
+        );
+
         this.ngZone.run(() => {
 
-          this.selectedNode = {
+          this.selectedNode =
+            selectedNode;
 
-            id:
-              data.id,
-
-            label:
-              data.label,
-
-            type:
-              data.nodeType,
-
-            properties:
-              data.properties || {}
-
-          };
-
-          console.log(
-            'Nodo seleccionado:',
-            this.selectedNode
-          );
+          this.changeDetectorRef.detectChanges();
 
         });
+
       }
     );
 
@@ -483,10 +522,15 @@ export class Graph implements AfterViewInit {
 
             this.selectedNode = null;
 
+            this.changeDetectorRef.detectChanges();
+
           });
+
         }
+
       }
     );
+
   }
 
   private getNodeId(
@@ -503,6 +547,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return `document-${properties.source_id}`;
+
     }
 
     if (
@@ -513,6 +558,7 @@ export class Graph implements AfterViewInit {
       return (
         `hypothesis-${properties.source_id}-${properties.title}`
       );
+
     }
 
     if (
@@ -523,6 +569,7 @@ export class Graph implements AfterViewInit {
       return (
         `entity-${properties.name}-${properties.type}`
       );
+
     }
 
     if (
@@ -533,11 +580,13 @@ export class Graph implements AfterViewInit {
       return (
         `pattern-${properties.type}-${properties.description}`
       );
+
     }
 
     return JSON.stringify(
       properties
     );
+
   }
 
   private getNodeLabel(
@@ -567,9 +616,11 @@ export class Graph implements AfterViewInit {
     ) {
 
       return labels[0];
+
     }
 
     return 'Nodo';
+
   }
 
   private getNodeType(
@@ -587,6 +638,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'DOCUMENT';
+
     }
 
     if (
@@ -595,6 +647,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'HYPOTHESIS';
+
     }
 
     if (
@@ -603,6 +656,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'PATTERN';
+
     }
 
     if (
@@ -610,6 +664,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'NUMBER';
+
     }
 
     if (
@@ -617,6 +672,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'METRIC';
+
     }
 
     if (
@@ -625,6 +681,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'ENTITY';
+
     }
 
     if (
@@ -633,6 +690,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'DOCUMENT';
+
     }
 
     if (
@@ -641,6 +699,7 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'HYPOTHESIS';
+
     }
 
     if (
@@ -649,8 +708,11 @@ export class Graph implements AfterViewInit {
     ) {
 
       return 'PATTERN';
+
     }
 
     return 'ENTITY';
+
   }
+
 }
