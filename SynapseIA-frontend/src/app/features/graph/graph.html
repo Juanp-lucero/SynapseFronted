@@ -1,6 +1,6 @@
 <div class="graph-page">
 
-  <div class="graph-header">
+  <header class="graph-header">
 
     <div>
       <h1>Synapse IA</h1>
@@ -9,59 +9,68 @@
 
     <button
       type="button"
+      class="load-button"
       (click)="loadGraph()"
     >
       Cargar grafo
     </button>
 
-  </div>
+  </header>
 
-  <div class="graph-layout">
+  <main class="graph-card">
 
     <div
       #graphContainer
       class="graph-container"
     ></div>
 
-    @if (selectedNode) {
+  </main>
 
-      <aside class="node-panel">
+  @if (selectedNode) {
 
-        <div class="panel-header">
+    <aside class="node-panel">
 
-          <div>
-            <span class="panel-label">
-              Nodo seleccionado
-            </span>
+      <div class="panel-header">
 
-            <h2>
-              {{ selectedNode.label }}
-            </h2>
-          </div>
+        <div>
 
-          <button
-            type="button"
-            class="close-button"
-            (click)="selectedNode = null"
-          >
-            ×
-          </button>
+          <span class="panel-label">
+            Nodo seleccionado
+          </span>
+
+          <h2>
+            {{ selectedNode.label }}
+          </h2>
 
         </div>
 
-        <div class="node-type">
+        <button
+          type="button"
+          class="close-button"
+          (click)="selectedNode = null"
+        >
+          ×
+        </button>
 
-          <span>Tipo</span>
+      </div>
 
-          <strong>
-            {{ selectedNode.type }}
-          </strong>
+      <div class="node-type">
 
-        </div>
+        <span>Tipo</span>
 
-        <div class="properties">
+        <strong>
+          {{ selectedNode.type }}
+        </strong>
 
-          <h3>Propiedades</h3>
+      </div>
+
+      <div class="properties">
+
+        <h3>Propiedades</h3>
+
+        @if (
+          selectedNode.properties
+        ) {
 
           @for (
             property of selectedNode.properties | keyvalue;
@@ -82,12 +91,12 @@
 
           }
 
-        </div>
+        }
 
-      </aside>
+      </div>
 
-    }
+    </aside>
 
-  </div>
+  }
 
 </div>

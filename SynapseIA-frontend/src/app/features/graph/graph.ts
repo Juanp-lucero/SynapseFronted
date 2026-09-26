@@ -2,7 +2,8 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  ViewChild
+  ViewChild,
+  NgZone
 } from '@angular/core';
 
 import {
@@ -39,7 +40,8 @@ export class Graph implements AfterViewInit {
   private viewReady = false;
 
   constructor(
-    private graphService: GraphService
+    private graphService: GraphService,
+    private ngZone: NgZone
   ) {}
 
   ngAfterViewInit(): void {
@@ -419,25 +421,29 @@ export class Graph implements AfterViewInit {
         const data =
           node.data();
 
-        this.selectedNode = {
+        this.ngZone.run(() => {
 
-          id:
-            data.id,
+          this.selectedNode = {
 
-          label:
-            data.label,
+            id:
+              data.id,
 
-          type:
-            data.nodeType,
+            label:
+              data.label,
 
-          properties:
-            data.properties
-        };
+            type:
+              data.nodeType,
 
-        console.log(
-          'Nodo seleccionado:',
-          this.selectedNode
-        );
+            properties:
+              data.properties
+          };
+
+          console.log(
+            'Nodo seleccionado:',
+            this.selectedNode
+          );
+
+        });
       }
     );
 
@@ -449,7 +455,12 @@ export class Graph implements AfterViewInit {
           event.target === this.cy
         ) {
 
-          this.selectedNode = null;
+          this.ngZone.run(() => {
+
+            this.selectedNode = null;
+
+          });
+
         }
       }
     );
