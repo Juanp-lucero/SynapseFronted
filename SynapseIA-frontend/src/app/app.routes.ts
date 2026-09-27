@@ -1,33 +1,55 @@
-import { Routes } from '@angular/router';
+import {
+  Routes
+} from '@angular/router';
 
-import { Graph } from './features/graph/graph';
+import {
+  Layout
+} from './layout/layout';
 
-import { Dashboard } from './features/dashboard/dashboard';
+import {
+  Dashboard
+} from './features/dashboard/dashboard';
 
-import { Projects } from './features/projects/projects';
+import {
+  Projects
+} from './features/projects/projects';
+
+import {
+  Graph
+} from './features/graph/graph';
 
 
 export const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full'
-  },
+    component: Layout,
 
-  {
-    path: 'dashboard',
-    component: Dashboard
-  },
+    children: [
 
-  {
-    path: 'projects',
-    component: Projects
-  },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
 
-  {
-    path: 'graph',
-    component: Graph
+      {
+        path: 'dashboard',
+        component: Dashboard
+      },
+
+      {
+        path: 'projects',
+        component: Projects
+      },
+
+      {
+        path: 'graph',
+        component: Graph
+      }
+
+    ]
+
   }
 
 ];

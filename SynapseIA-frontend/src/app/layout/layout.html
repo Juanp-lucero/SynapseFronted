@@ -1,0 +1,207 @@
+<div class="app-layout">
+
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+
+      <div class="brand-mark">
+        S
+      </div>
+
+      <div>
+        <span class="brand-name">
+          SYNAPSE IA
+        </span>
+
+        <span class="brand-subtitle">
+          Intelligent Research
+        </span>
+      </div>
+
+    </div>
+
+
+    <nav class="sidebar-navigation">
+
+      <span class="navigation-title">
+        PRINCIPAL
+      </span>
+
+
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="navigation-item"
+      >
+
+        <span class="navigation-icon">
+          ⌂
+        </span>
+
+        <span>
+          Dashboard
+        </span>
+
+      </a>
+
+
+      <a
+        routerLink="/projects"
+        routerLinkActive="active"
+        class="navigation-item"
+      >
+
+        <span class="navigation-icon">
+          ▣
+        </span>
+
+        <span>
+          Proyectos
+        </span>
+
+      </a>
+
+
+      <a
+        routerLink="/sources"
+        routerLinkActive="active"
+        class="navigation-item"
+      >
+
+        <span class="navigation-icon">
+          ◫
+        </span>
+
+        <span>
+          Fuentes
+        </span>
+
+      </a>
+
+
+      <a
+        routerLink="/analysis"
+        routerLinkActive="active"
+        class="navigation-item"
+      >
+
+        <span class="navigation-icon">
+          ◈
+        </span>
+
+        <span>
+          Análisis
+        </span>
+
+      </a>
+
+
+      <span class="navigation-title secondary-title">
+        VISUALIZACIÓN
+      </span>
+
+
+      <a
+        routerLink="/graph"
+        routerLinkActive="active"
+        class="navigation-item"
+      >
+
+        <span class="navigation-icon">
+          ◎
+        </span>
+
+        <span>
+          Knowledge Graph
+        </span>
+
+      </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+      <a
+        routerLink="/settings"
+        routerLinkActive="active"
+        class="navigation-item"
+      >
+
+        <span class="navigation-icon">
+          ⚙
+        </span>
+
+        <span>
+          Configuración
+        </span>
+
+      </a>
+
+
+      <div class="system-status">
+
+        <span class="status-indicator"></span>
+
+        <div>
+
+          <span class="status-title">
+            Sistema operativo
+          </span>
+
+          <span class="status-description">
+            Synapse IA conectado
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </aside>
+
+
+  <main class="main-content">
+
+    <header class="topbar">
+
+      <div class="topbar-left">
+
+        <span class="page-context">
+          Plataforma de investigación inteligente
+        </span>
+
+      </div>
+
+
+      <div class="topbar-right">
+
+        <div class="connection-status">
+
+          <span class="status-indicator"></span>
+
+          API conectada
+
+        </div>
+
+
+        <div class="user-avatar">
+          I
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <section class="content-area">
+
+      <router-outlet></router-outlet>
+
+    </section>
+
+  </main>
+
+</div>
