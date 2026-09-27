@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
 
 import { Graph } from './features/graph/graph';
+
 import { Dashboard } from './features/dashboard/dashboard';
+
+import { Projects } from './features/projects/projects';
+
 
 export const routes: Routes = [
 
@@ -14,6 +18,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard
+  },
+
+  {
+    path: 'projects',
+    component: Projects
   },
 
   {

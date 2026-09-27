@@ -1,0 +1,186 @@
+<div class="projects-page">
+
+  <header class="projects-header">
+
+    <div>
+
+      <span class="brand-tag">
+        SYNAPSE IA
+      </span>
+
+      <h1>
+        Proyectos
+      </h1>
+
+      <p>
+        Organiza tus investigaciones y
+        fuentes de información.
+      </p>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <a
+        routerLink="/dashboard"
+        class="secondary-button"
+      >
+        Dashboard
+      </a>
+
+      <button
+        class="primary-button"
+        type="button"
+      >
+        + Nuevo proyecto
+      </button>
+
+    </div>
+
+  </header>
+
+
+  @if (loading) {
+
+    <section class="state-card">
+
+      <div class="loader"></div>
+
+      <h2>
+        Cargando proyectos...
+      </h2>
+
+      <p>
+        Consultando la información de Synapse IA.
+      </p>
+
+    </section>
+
+  }
+
+
+  @if (!loading && errorMessage) {
+
+    <section class="state-card error">
+
+      <h2>
+        No se pudieron cargar los proyectos
+      </h2>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+    </section>
+
+  }
+
+
+  @if (!loading && !errorMessage) {
+
+    @if (projects.length > 0) {
+
+      <section class="projects-grid">
+
+        @for (
+          project of projects;
+          track project.id
+        ) {
+
+          <article class="project-card">
+
+            <div class="project-top">
+
+              <div class="project-icon">
+                P
+              </div>
+
+              <button
+                class="delete-button"
+                type="button"
+                (click)="deleteProject(project)"
+                title="Eliminar proyecto"
+              >
+                ×
+              </button>
+
+            </div>
+
+
+            <div class="project-content">
+
+              <h2>
+                {{ project.name }}
+              </h2>
+
+              <p>
+
+                @if (project.description) {
+
+                  {{ project.description }}
+
+                } @else {
+
+                  Este proyecto no tiene
+                  descripción.
+
+                }
+
+              </p>
+
+            </div>
+
+
+            <div class="project-footer">
+
+              <span>
+                Proyecto #{{ project.id }}
+              </span>
+
+              <a
+                routerLink="/graph"
+                class="view-button"
+              >
+                Ver grafo →
+              </a>
+
+            </div>
+
+          </article>
+
+        }
+
+      </section>
+
+    } @else {
+
+      <section class="empty-state">
+
+        <div class="empty-icon">
+          P
+        </div>
+
+        <h2>
+          Todavía no tienes proyectos
+        </h2>
+
+        <p>
+          Crea tu primer proyecto para comenzar
+          a analizar información con Synapse IA.
+        </p>
+
+        <button
+          class="primary-button"
+          type="button"
+        >
+          Crear primer proyecto
+        </button>
+
+      </section>
+
+    }
+
+  }
+
+</div>
