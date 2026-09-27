@@ -1,1 +1,291 @@
-<p>dashboard works!</p>
+<div class="dashboard-page">
+
+  <header class="dashboard-header">
+
+    <div>
+
+      <span class="brand-tag">
+        SYNAPSE IA
+      </span>
+
+      <h1>
+        Dashboard
+      </h1>
+
+      <p>
+        Bienvenido, {{ userName }}.
+        Explora y analiza información para descubrir
+        conexiones ocultas.
+      </p>
+
+    </div>
+
+    <a
+      routerLink="/graph"
+      class="graph-button"
+    >
+      Explorar Knowledge Graph
+    </a>
+
+  </header>
+
+
+  <section class="statistics-grid">
+
+    <article class="stat-card">
+
+      <div class="stat-icon">
+        P
+      </div>
+
+      <div>
+
+        <span>
+          Proyectos
+        </span>
+
+        <strong>
+          {{ statistics.projects }}
+        </strong>
+
+      </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+      <div class="stat-icon">
+        F
+      </div>
+
+      <div>
+
+        <span>
+          Fuentes
+        </span>
+
+        <strong>
+          {{ statistics.sources }}
+        </strong>
+
+      </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+      <div class="stat-icon">
+        A
+      </div>
+
+      <div>
+
+        <span>
+          Análisis
+        </span>
+
+        <strong>
+          {{ statistics.analyses }}
+        </strong>
+
+      </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+      <div class="stat-icon">
+        H
+      </div>
+
+      <div>
+
+        <span>
+          Hipótesis
+        </span>
+
+        <strong>
+          {{ statistics.hypotheses }}
+        </strong>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <section class="dashboard-grid">
+
+    <article class="welcome-card">
+
+      <div class="card-content">
+
+        <span class="card-tag">
+          ANÁLISIS INTELIGENTE
+        </span>
+
+        <h2>
+          Convierte información
+          en conocimiento.
+        </h2>
+
+        <p>
+          Synapse IA procesa diferentes fuentes de
+          información, identifica entidades, encuentra
+          relaciones y genera hipótesis para ayudarte
+          a descubrir conexiones que podrían pasar
+          desapercibidas.
+        </p>
+
+        <a
+          routerLink="/graph"
+          class="primary-button"
+        >
+          Ver Knowledge Graph
+        </a>
+
+      </div>
+
+      <div class="visual-circle">
+
+        <div class="circle-inner">
+          IA
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <article class="activity-card">
+
+      <div class="card-header">
+
+        <div>
+
+          <span class="card-tag">
+            ACTIVIDAD
+          </span>
+
+          <h2>
+            Actividad reciente
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          +
+        </div>
+
+        <h3>
+          Aún no hay actividad
+        </h3>
+
+        <p>
+          Cuando analices documentos,
+          aquí aparecerán los resultados
+          más recientes.
+        </p>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <section class="quick-section">
+
+    <span class="card-tag">
+      ACCIONES RÁPIDAS
+    </span>
+
+    <h2>
+      ¿Qué quieres hacer?
+    </h2>
+
+
+    <div class="quick-grid">
+
+      <a
+        routerLink="/graph"
+        class="quick-card"
+      >
+
+        <div class="quick-icon">
+          G
+        </div>
+
+        <div>
+
+          <h3>
+            Explorar grafo
+          </h3>
+
+          <p>
+            Visualiza las conexiones
+            encontradas por Synapse IA.
+          </p>
+
+        </div>
+
+      </a>
+
+
+      <div class="quick-card disabled">
+
+        <div class="quick-icon">
+          D
+        </div>
+
+        <div>
+
+          <h3>
+            Analizar documento
+          </h3>
+
+          <p>
+            Próximamente podrás cargar
+            una nueva fuente de información.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="quick-card disabled">
+
+        <div class="quick-icon">
+          P
+        </div>
+
+        <div>
+
+          <h3>
+            Crear proyecto
+          </h3>
+
+          <p>
+            Organiza tus investigaciones
+            en proyectos independientes.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
