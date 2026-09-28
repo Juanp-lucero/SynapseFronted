@@ -93,11 +93,6 @@ export class SourceService {
       file
     );
 
-    formData.append(
-      'project_id',
-      projectId.toString()
-    );
-
 
     const headers =
       new HttpHeaders({
@@ -107,7 +102,7 @@ export class SourceService {
 
 
     return this.http.post<Source>(
-      `${this.apiUrl}/sources/upload`,
+      `${this.apiUrl}/sources/upload?project_id=${projectId}`,
       formData,
       {
         headers
