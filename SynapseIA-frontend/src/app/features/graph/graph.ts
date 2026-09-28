@@ -8,6 +8,10 @@ import {
 } from '@angular/core';
 
 import {
+  ActivatedRoute
+} from '@angular/router';
+
+import {
   KeyValuePipe
 } from '@angular/common';
 
@@ -38,24 +42,31 @@ export class Graph implements AfterViewInit {
 
   private viewReady = false;
 
+
   constructor(
     private graphService: GraphService,
     private ngZone: NgZone,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
+
 
   ngAfterViewInit(): void {
 
     this.viewReady = true;
 
     this.loadGraph();
+
   }
+
 
   loadGraph(): void {
 
-    const token = localStorage.getItem(
-      'access_token'
-    );
+    const token =
+      localStorage.getItem(
+        'access_token'
+      );
+
 
     if (!token) {
 
@@ -64,9 +75,47 @@ export class Graph implements AfterViewInit {
       );
 
       return;
+
     }
 
-    const sourceId = 4;
+
+    const sourceIdParam =
+      this.route.snapshot.paramMap.get(
+        'sourceId'
+      );
+
+
+    if (!sourceIdParam) {
+
+      console.error(
+        'No se especificó una fuente para el grafo'
+      );
+
+      return;
+
+    }
+
+
+    const sourceId =
+      Number(sourceIdParam);
+
+
+    if (Number.isNaN(sourceId)) {
+
+      console.error(
+        'El ID de la fuente no es válido'
+      );
+
+      return;
+
+    }
+
+
+    console.log(
+      'Cargando grafo de la fuente:',
+      sourceId
+    );
+
 
     this.graphService
       .getSourceGraph(
@@ -75,20 +124,28 @@ export class Graph implements AfterViewInit {
       )
       .subscribe({
 
-        next: (data: any) => {
+        next: (
+          data: any
+        ) => {
 
           console.log(
             'Datos del grafo:',
             data
           );
 
+
           this.ngZone.run(() => {
 
-            this.graphData = data;
+            this.graphData =
+              data;
 
-            this.selectedNode = null;
+
+            this.selectedNode =
+              null;
+
 
             this.changeDetectorRef.detectChanges();
+
 
             if (this.viewReady) {
 
@@ -100,7 +157,10 @@ export class Graph implements AfterViewInit {
 
         },
 
-        error: (error: any) => {
+
+        error: (
+          error: any
+        ) => {
 
           console.error(
             'Error obteniendo el grafo:',
@@ -110,13 +170,17 @@ export class Graph implements AfterViewInit {
         }
 
       });
+
   }
+
 
   closeNodePanel(): void {
 
     this.ngZone.run(() => {
 
-      this.selectedNode = null;
+      this.selectedNode =
+        null;
+
 
       this.changeDetectorRef.detectChanges();
 
@@ -124,15 +188,22 @@ export class Graph implements AfterViewInit {
 
   }
 
+
   private renderGraph(): void {
 
     if (!this.graphContainer) {
+
       return;
+
     }
 
+
     if (!this.graphData) {
+
       return;
+
     }
+
 
     if (this.cy) {
 
@@ -142,24 +213,30 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     const nodes =
       this.graphData.nodes || [];
+
 
     const relationships =
       this.graphData.relationships || [];
 
+
     const elements:
       cytoscape.ElementDefinition[] = [];
+
 
     for (const node of nodes) {
 
       const properties =
         node.properties || {};
 
+
       const id =
         this.getNodeId(
           properties
         );
+
 
       const label =
         this.getNodeLabel(
@@ -167,44 +244,66 @@ export class Graph implements AfterViewInit {
           node.labels
         );
 
+
       const nodeType =
         this.getNodeType(
           properties,
           node.labels
         );
 
+
       if (!id) {
+
         continue;
+
       }
+
 
       elements.push({
 
         data: {
+
           id,
+
           label,
+
           nodeType,
+
           properties
+
         }
 
       });
 
     }
 
-    for (const relationship of relationships) {
+
+    for (
+      const relationship
+      of relationships
+    ) {
 
       const source =
         this.getNodeId(
           relationship.source
         );
 
+
       const target =
         this.getNodeId(
           relationship.target
         );
 
-      if (!source || !target) {
+
+      if (
+        !source ||
+        !target
+      ) {
+
         continue;
+
       }
+
 
       elements.push({
 
@@ -226,245 +325,268 @@ export class Graph implements AfterViewInit {
 
     }
 
-    this.cy = cytoscape({
 
-      container:
-        this.graphContainer.nativeElement,
+    this.cy =
+      cytoscape({
 
-      elements,
+        container:
+          this.graphContainer.nativeElement,
 
-      layout: {
 
-        name: 'cose',
+        elements,
 
-        animate: true,
 
-        padding: 60,
+        layout: {
 
-        nodeRepulsion: 12000,
+          name: 'cose',
 
-        idealEdgeLength: 140,
+          animate: true,
 
-        gravity: 0.25
+          padding: 60,
 
-      },
+          nodeRepulsion: 12000,
 
-      style: [
+          idealEdgeLength: 140,
 
-        {
-          selector: 'node',
-
-          style: {
-
-            'background-color':
-              '#6366f1',
-
-            'label':
-              'data(label)',
-
-            'color':
-              '#ffffff',
-
-            'text-valign':
-              'center',
-
-            'text-halign':
-              'center',
-
-            'font-size':
-              10,
-
-            'font-weight':
-              'bold',
-
-            'text-wrap':
-              'wrap',
-
-            'text-max-width':
-              '85px',
-
-            'width':
-              42,
-
-            'height':
-              42,
-
-            'border-width':
-              2,
-
-            'border-color':
-              '#ffffff'
-
-          }
+          gravity: 0.25
 
         },
 
-        {
-          selector:
-            'node[nodeType="DOCUMENT"]',
 
-          style: {
+        style: [
 
-            'background-color':
-              '#7c3aed',
+          {
 
-            'width':
-              65,
+            selector: 'node',
 
-            'height':
-              65,
+            style: {
 
-            'font-size':
-              11
+              'background-color':
+                '#6366f1',
+
+              'label':
+                'data(label)',
+
+              'color':
+                '#ffffff',
+
+              'text-valign':
+                'center',
+
+              'text-halign':
+                'center',
+
+              'font-size':
+                10,
+
+              'font-weight':
+                'bold',
+
+              'text-wrap':
+                'wrap',
+
+              'text-max-width':
+                '85px',
+
+              'width':
+                42,
+
+              'height':
+                42,
+
+              'border-width':
+                2,
+
+              'border-color':
+                '#ffffff'
+
+            }
+
+          },
+
+
+          {
+
+            selector:
+              'node[nodeType="DOCUMENT"]',
+
+            style: {
+
+              'background-color':
+                '#7c3aed',
+
+              'width':
+                65,
+
+              'height':
+                65,
+
+              'font-size':
+                11
+
+            }
+
+          },
+
+
+          {
+
+            selector:
+              'node[nodeType="ENTITY"]',
+
+            style: {
+
+              'background-color':
+                '#2563eb'
+
+            }
+
+          },
+
+
+          {
+
+            selector:
+              'node[nodeType="PATTERN"]',
+
+            style: {
+
+              'background-color':
+                '#16a34a',
+
+              'width':
+                52,
+
+              'height':
+                52
+
+            }
+
+          },
+
+
+          {
+
+            selector:
+              'node[nodeType="HYPOTHESIS"]',
+
+            style: {
+
+              'background-color':
+                '#f97316',
+
+              'width':
+                58,
+
+              'height':
+                58
+
+            }
+
+          },
+
+
+          {
+
+            selector:
+              'node[nodeType="NUMBER"]',
+
+            style: {
+
+              'background-color':
+                '#64748b',
+
+              'width':
+                35,
+
+              'height':
+                35,
+
+              'font-size':
+                9
+
+            }
+
+          },
+
+
+          {
+
+            selector:
+              'node[nodeType="METRIC"]',
+
+            style: {
+
+              'background-color':
+                '#0891b2',
+
+              'width':
+                48,
+
+              'height':
+                48
+
+            }
+
+          },
+
+
+          {
+
+            selector: 'edge',
+
+            style: {
+
+              'width':
+                1.5,
+
+              'line-color':
+                '#cbd5e1',
+
+              'target-arrow-color':
+                '#94a3b8',
+
+              'target-arrow-shape':
+                'triangle',
+
+              'curve-style':
+                'bezier'
+
+            }
+
+          },
+
+
+          {
+
+            selector:
+              'node:selected',
+
+            style: {
+
+              'background-color':
+                '#ec4899',
+
+              'border-width':
+                4,
+
+              'border-color':
+                '#ffffff',
+
+              'width':
+                62,
+
+              'height':
+                62
+
+            }
 
           }
 
-        },
+        ]
 
-        {
-          selector:
-            'node[nodeType="ENTITY"]',
+      });
 
-          style: {
-
-            'background-color':
-              '#2563eb'
-
-          }
-
-        },
-
-        {
-          selector:
-            'node[nodeType="PATTERN"]',
-
-          style: {
-
-            'background-color':
-              '#16a34a',
-
-            'width':
-              52,
-
-            'height':
-              52
-
-          }
-
-        },
-
-        {
-          selector:
-            'node[nodeType="HYPOTHESIS"]',
-
-          style: {
-
-            'background-color':
-              '#f97316',
-
-            'width':
-              58,
-
-            'height':
-              58
-
-          }
-
-        },
-
-        {
-          selector:
-            'node[nodeType="NUMBER"]',
-
-          style: {
-
-            'background-color':
-              '#64748b',
-
-            'width':
-              35,
-
-            'height':
-              35,
-
-            'font-size':
-              9
-
-          }
-
-        },
-
-        {
-          selector:
-            'node[nodeType="METRIC"]',
-
-          style: {
-
-            'background-color':
-              '#0891b2',
-
-            'width':
-              48,
-
-            'height':
-              48
-
-          }
-
-        },
-
-        {
-          selector: 'edge',
-
-          style: {
-
-            'width':
-              1.5,
-
-            'line-color':
-              '#cbd5e1',
-
-            'target-arrow-color':
-              '#94a3b8',
-
-            'target-arrow-shape':
-              'triangle',
-
-            'curve-style':
-              'bezier'
-
-          }
-
-        },
-
-        {
-          selector:
-            'node:selected',
-
-          style: {
-
-            'background-color':
-              '#ec4899',
-
-            'border-width':
-              4,
-
-            'border-color':
-              '#ffffff',
-
-            'width':
-              62,
-
-            'height':
-              62
-
-          }
-
-        }
-
-      ]
-
-    });
 
     this.cy.on(
       'tap',
@@ -474,8 +596,10 @@ export class Graph implements AfterViewInit {
         const node =
           event.target;
 
+
         const data =
           node.data();
+
 
         const selectedNode = {
 
@@ -493,15 +617,18 @@ export class Graph implements AfterViewInit {
 
         };
 
+
         console.log(
           'Nodo seleccionado:',
           selectedNode
         );
 
+
         this.ngZone.run(() => {
 
           this.selectedNode =
             selectedNode;
+
 
           this.changeDetectorRef.detectChanges();
 
@@ -509,6 +636,7 @@ export class Graph implements AfterViewInit {
 
       }
     );
+
 
     this.cy.on(
       'tap',
@@ -520,7 +648,9 @@ export class Graph implements AfterViewInit {
 
           this.ngZone.run(() => {
 
-            this.selectedNode = null;
+            this.selectedNode =
+              null;
+
 
             this.changeDetectorRef.detectChanges();
 
@@ -533,13 +663,17 @@ export class Graph implements AfterViewInit {
 
   }
 
+
   private getNodeId(
     properties: any
   ): string {
 
     if (!properties) {
+
       return '';
+
     }
+
 
     if (
       properties.source_id !== undefined &&
@@ -549,6 +683,7 @@ export class Graph implements AfterViewInit {
       return `document-${properties.source_id}`;
 
     }
+
 
     if (
       properties.source_id !== undefined &&
@@ -561,6 +696,7 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     if (
       properties.name &&
       properties.type
@@ -571,6 +707,7 @@ export class Graph implements AfterViewInit {
       );
 
     }
+
 
     if (
       properties.type &&
@@ -583,11 +720,13 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     return JSON.stringify(
       properties
     );
 
   }
+
 
   private getNodeLabel(
     properties: any,
@@ -595,20 +734,32 @@ export class Graph implements AfterViewInit {
   ): string {
 
     if (!properties) {
+
       return 'Nodo';
+
     }
+
 
     if (properties.name) {
+
       return properties.name;
+
     }
+
 
     if (properties.title) {
+
       return properties.title;
+
     }
 
+
     if (properties.type) {
+
       return properties.type;
+
     }
+
 
     if (
       labels &&
@@ -619,9 +770,11 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     return 'Nodo';
 
   }
+
 
   private getNodeType(
     properties: any,
@@ -629,8 +782,11 @@ export class Graph implements AfterViewInit {
   ): string {
 
     if (!properties) {
+
       return 'ENTITY';
+
     }
+
 
     if (
       properties.source_id !== undefined &&
@@ -641,6 +797,7 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     if (
       properties.source_id !== undefined &&
       properties.title
@@ -649,6 +806,7 @@ export class Graph implements AfterViewInit {
       return 'HYPOTHESIS';
 
     }
+
 
     if (
       properties.type &&
@@ -659,6 +817,7 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     if (
       properties.type === 'NUMBER'
     ) {
@@ -667,6 +826,7 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     if (
       properties.type === 'METRIC'
     ) {
@@ -674,6 +834,7 @@ export class Graph implements AfterViewInit {
       return 'METRIC';
 
     }
+
 
     if (
       properties.name &&
@@ -684,6 +845,7 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     if (
       labels &&
       labels.includes('Document')
@@ -692,6 +854,7 @@ export class Graph implements AfterViewInit {
       return 'DOCUMENT';
 
     }
+
 
     if (
       labels &&
@@ -702,6 +865,7 @@ export class Graph implements AfterViewInit {
 
     }
 
+
     if (
       labels &&
       labels.includes('Pattern')
@@ -710,6 +874,7 @@ export class Graph implements AfterViewInit {
       return 'PATTERN';
 
     }
+
 
     return 'ENTITY';
 

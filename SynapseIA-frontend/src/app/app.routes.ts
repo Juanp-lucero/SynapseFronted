@@ -69,6 +69,11 @@ export const routes: Routes = [
       {
         path: 'graph',
         component: Graph
+      },
+
+      {
+        path: 'graph/source/:sourceId',
+        component: Graph
       }
 
     ]
