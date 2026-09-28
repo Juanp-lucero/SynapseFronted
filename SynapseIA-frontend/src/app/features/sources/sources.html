@@ -1,0 +1,303 @@
+<div class="sources-page">
+
+  <header class="sources-header">
+
+    <div>
+
+      <span class="brand-tag">
+        SYNAPSE IA
+      </span>
+
+      <h1>
+        Fuentes
+      </h1>
+
+      <p>
+        Carga y administra la información que
+        Synapse IA utilizará para descubrir conexiones.
+      </p>
+
+    </div>
+
+  </header>
+
+
+  @if (projects.length > 0) {
+
+    <section class="upload-card">
+
+      <div class="upload-header">
+
+        <div>
+
+          <span class="card-tag">
+            NUEVA FUENTE
+          </span>
+
+          <h2>
+            Cargar documento
+          </h2>
+
+          <p>
+            Selecciona el proyecto y agrega una
+            fuente de información para analizar.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="upload-controls">
+
+        <div class="field">
+
+          <label for="project">
+            Proyecto
+          </label>
+
+          <select
+            id="project"
+            [(ngModel)]="selectedProjectId"
+            (change)="onProjectChange()"
+          >
+
+            @for (
+              project of projects;
+              track project.id
+            ) {
+
+              <option
+                [value]="project.id"
+              >
+                {{ project.name }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <div class="file-area">
+
+          <label
+            class="file-dropzone"
+            for="sourceFile"
+          >
+
+            <div class="file-icon">
+              ↑
+            </div>
+
+            <strong>
+              @if (selectedFile) {
+
+                {{ selectedFile.name }}
+
+              } @else {
+
+                Selecciona un archivo
+
+              }
+            </strong>
+
+            <span>
+              PDF, DOCX, TXT o CSV
+            </span>
+
+          </label>
+
+
+          <input
+            id="sourceFile"
+            type="file"
+            accept=".pdf,.docx,.txt,.csv"
+            (change)="onFileSelected($event)"
+          >
+
+        </div>
+
+
+        <button
+          class="upload-button"
+          type="button"
+          [disabled]="uploading"
+          (click)="uploadFile()"
+        >
+
+          @if (uploading) {
+
+            Procesando...
+
+          } @else {
+
+            Cargar fuente
+
+          }
+
+        </button>
+
+      </div>
+
+    </section>
+
+  }
+
+
+  @if (successMessage) {
+
+    <div class="message success">
+      {{ successMessage }}
+    </div>
+
+  }
+
+
+  @if (errorMessage) {
+
+    <div class="message error">
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  <section class="sources-section">
+
+    <div class="section-header">
+
+      <div>
+
+        <span class="card-tag">
+          INFORMACIÓN
+        </span>
+
+        <h2>
+          Fuentes disponibles
+        </h2>
+
+      </div>
+
+      <span class="source-count">
+        {{ sources.length }} fuentes
+      </span>
+
+    </div>
+
+
+    @if (loading) {
+
+      <div class="state-card">
+
+        <div class="loader"></div>
+
+        <h3>
+          Cargando fuentes...
+        </h3>
+
+      </div>
+
+    } @else {
+
+      @if (sources.length > 0) {
+
+        <div class="sources-grid">
+
+          @for (
+            source of sources;
+            track source.id
+          ) {
+
+            <article class="source-card">
+
+              <div class="source-top">
+
+                <div class="source-icon">
+                  {{ getFileType(source).charAt(0) }}
+                </div>
+
+                <button
+                  class="delete-button"
+                  type="button"
+                  title="Eliminar fuente"
+                  (click)="deleteSource(source)"
+                >
+                  ×
+                </button>
+
+              </div>
+
+
+              <div class="source-content">
+
+                <span class="source-type">
+                  {{ getFileType(source) }}
+                </span>
+
+                <h3>
+                  {{ source.name }}
+                </h3>
+
+                <p>
+
+                  @if (source.description) {
+
+                    {{ source.description }}
+
+                  } @else {
+
+                    Fuente disponible para análisis.
+
+                  }
+
+                </p>
+
+              </div>
+
+
+              <div class="source-footer">
+
+                <span>
+                  Fuente #{{ source.id }}
+                </span>
+
+                <span>
+                  Proyecto #{{ source.project_id }}
+                </span>
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            +
+          </div>
+
+          <h3>
+            Todavía no hay fuentes
+          </h3>
+
+          <p>
+            Carga tu primer documento para comenzar
+            el análisis inteligente.
+          </p>
+
+        </div>
+
+      }
+
+    }
+
+  </section>
+
+</div>

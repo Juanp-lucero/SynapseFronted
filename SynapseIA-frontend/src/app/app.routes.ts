@@ -15,6 +15,10 @@ import {
 } from './features/projects/projects';
 
 import {
+  Sources
+} from './features/sources/sources';
+
+import {
   Graph
 } from './features/graph/graph';
 
@@ -41,6 +45,11 @@ export const routes: Routes = [
       {
         path: 'projects',
         component: Projects
+      },
+
+      {
+        path: 'sources',
+        component: Sources
       },
 
       {

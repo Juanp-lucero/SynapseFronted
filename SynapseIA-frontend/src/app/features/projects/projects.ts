@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   OnInit
 } from '@angular/core';
@@ -32,7 +33,8 @@ export class Projects implements OnInit {
 
 
   constructor(
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
 
@@ -58,6 +60,8 @@ export class Projects implements OnInit {
 
       this.loading = false;
 
+      this.changeDetectorRef.detectChanges();
+
       return;
 
     }
@@ -80,6 +84,8 @@ export class Projects implements OnInit {
 
           this.loading = false;
 
+          this.changeDetectorRef.detectChanges();
+
         },
 
         error: (
@@ -95,6 +101,8 @@ export class Projects implements OnInit {
             'No fue posible cargar los proyectos.';
 
           this.loading = false;
+
+          this.changeDetectorRef.detectChanges();
 
         }
 
@@ -143,6 +151,8 @@ export class Projects implements OnInit {
               item =>
                 item.id !== project.id
             );
+
+          this.changeDetectorRef.detectChanges();
 
         },
 
