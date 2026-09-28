@@ -9,6 +9,10 @@ import {
 } from '@angular/forms';
 
 import {
+  Router
+} from '@angular/router';
+
+import {
   Source,
   SourceService
 } from '../../core/services/source';
@@ -17,6 +21,10 @@ import {
   Project,
   ProjectService
 } from '../../core/services/project';
+
+import {
+  AnalysisService
+} from '../../core/services/analysis';
 
 
 @Component({
@@ -42,6 +50,8 @@ export class Sources implements OnInit {
 
   uploading = false;
 
+  analyzingSourceId: number | null = null;
+
   errorMessage = '';
 
   successMessage = '';
@@ -50,6 +60,8 @@ export class Sources implements OnInit {
   constructor(
     private sourceService: SourceService,
     private projectService: ProjectService,
+    private analysisService: AnalysisService,
+    private router: Router,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
@@ -344,6 +356,93 @@ export class Sources implements OnInit {
 
           this.errorMessage =
             'No fue posible cargar el archivo.';
+
+          this.changeDetectorRef.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  analyzeSource(
+    source: Source
+  ): void {
+
+    const token =
+      localStorage.getItem(
+        'access_token'
+      );
+
+
+    if (!token) {
+
+      this.errorMessage =
+        'No existe una sesión activa.';
+
+      return;
+
+    }
+
+
+    this.analyzingSourceId =
+      source.id;
+
+    this.errorMessage = '';
+
+    this.successMessage =
+      'Analizando fuente...';
+
+    this.changeDetectorRef.detectChanges();
+
+
+    this.analysisService
+      .analyzeSource(
+        source.id,
+        token
+      )
+      .subscribe({
+
+        next: (
+          result
+        ) => {
+
+          console.log(
+            'Análisis completado:',
+            result
+          );
+
+          this.analyzingSourceId =
+            null;
+
+          this.successMessage =
+            'Análisis completado correctamente.';
+
+          this.changeDetectorRef.detectChanges();
+
+
+          this.router.navigate([
+            '/analysis/source',
+            source.id
+          ]);
+
+        },
+
+        error: (
+          error: any
+        ) => {
+
+          console.error(
+            'Error realizando análisis:',
+            error
+          );
+
+          this.analyzingSourceId =
+            null;
+
+          this.errorMessage =
+            'No fue posible analizar la fuente.';
 
           this.changeDetectorRef.detectChanges();
 

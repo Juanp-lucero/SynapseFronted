@@ -269,6 +269,27 @@
 
               </div>
 
+
+              <button
+                class="analyze-button"
+                type="button"
+                [disabled]="analyzingSourceId === source.id"
+                (click)="analyzeSource(source)"
+              >
+
+                @if (analyzingSourceId === source.id) {
+
+                  🧠 Analizando...
+
+                } @else {
+
+                  🧠 Analizar fuente
+
+                }
+
+              </button>
+
+
             </article>
 
           }

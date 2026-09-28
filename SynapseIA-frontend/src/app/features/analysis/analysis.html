@@ -1,0 +1,443 @@
+<div class="analysis-page">
+
+  <header class="analysis-header">
+
+    <div>
+
+      <span class="brand-tag">
+        SYNAPSE IA
+      </span>
+
+      <h1>
+        Análisis
+      </h1>
+
+      <p>
+        Explora las entidades, relaciones, patrones
+        e hipótesis descubiertas por Synapse IA.
+      </p>
+
+    </div>
+
+    <a
+      routerLink="/sources"
+      class="back-button"
+    >
+      ← Volver a fuentes
+    </a>
+
+  </header>
+
+
+  @if (loading) {
+
+    <section class="state-card">
+
+      <div class="loader"></div>
+
+      <h2>
+        Cargando análisis...
+      </h2>
+
+      <p>
+        Consultando los resultados de Synapse IA.
+      </p>
+
+    </section>
+
+  }
+
+
+  @if (!loading && errorMessage) {
+
+    <section class="state-card error">
+
+      <h2>
+        No se pudo cargar el análisis
+      </h2>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+    </section>
+
+  }
+
+
+  @if (
+    !loading &&
+    !errorMessage &&
+    currentAnalysis
+  ) {
+
+    <section class="analysis-status">
+
+      <div>
+
+        <span class="card-tag">
+          ANÁLISIS COMPLETADO
+        </span>
+
+        <h2>
+          Fuente #{{ currentAnalysis.source_id }}
+        </h2>
+
+        <p>
+          Estado:
+          <strong>
+            {{ currentAnalysis.status }}
+          </strong>
+        </p>
+
+      </div>
+
+      <a
+        routerLink="/graph"
+        class="graph-button"
+      >
+        Explorar Knowledge Graph
+      </a>
+
+    </section>
+
+
+    <section class="statistics-grid">
+
+      <article class="stat-card">
+
+        <div class="stat-icon">
+          E
+        </div>
+
+        <div>
+
+          <span>
+            Entidades
+          </span>
+
+          <strong>
+            {{ getEntityCount() }}
+          </strong>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon">
+          R
+        </div>
+
+        <div>
+
+          <span>
+            Relaciones
+          </span>
+
+          <strong>
+            {{ getRelationCount() }}
+          </strong>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon">
+          P
+        </div>
+
+        <div>
+
+          <span>
+            Patrones
+          </span>
+
+          <strong>
+            {{ getPatternCount() }}
+          </strong>
+
+        </div>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <div class="stat-icon">
+          H
+        </div>
+
+        <div>
+
+          <span>
+            Hipótesis
+          </span>
+
+          <strong>
+            {{ getHypothesisCount() }}
+          </strong>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <section class="results-grid">
+
+      <article class="result-card">
+
+        <div class="result-header">
+
+          <div>
+
+            <span class="card-tag">
+              ENTIDADES
+            </span>
+
+            <h2>
+              Entidades detectadas
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="result-list">
+
+          @for (
+            entity of currentAnalysis.entities;
+            track $index
+          ) {
+
+            <div class="result-item">
+
+              <span class="item-number">
+                {{ $index + 1 }}
+              </span>
+
+              <span>
+                {{ formatValue(entity) }}
+              </span>
+
+            </div>
+
+          } @empty {
+
+            <div class="empty-result">
+              No se detectaron entidades.
+            </div>
+
+          }
+
+        </div>
+
+      </article>
+
+
+      <article class="result-card">
+
+        <div class="result-header">
+
+          <div>
+
+            <span class="card-tag">
+              RELACIONES
+            </span>
+
+            <h2>
+              Relaciones encontradas
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="result-list">
+
+          @for (
+            relation of currentAnalysis.relations;
+            track $index
+          ) {
+
+            <div class="result-item">
+
+              <span class="item-number">
+                {{ $index + 1 }}
+              </span>
+
+              <span>
+                {{ formatValue(relation) }}
+              </span>
+
+            </div>
+
+          } @empty {
+
+            <div class="empty-result">
+              No se detectaron relaciones.
+            </div>
+
+          }
+
+        </div>
+
+      </article>
+
+
+      <article class="result-card">
+
+        <div class="result-header">
+
+          <div>
+
+            <span class="card-tag">
+              PATRONES
+            </span>
+
+            <h2>
+              Patrones detectados
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="result-list">
+
+          @for (
+            pattern of currentAnalysis.patterns;
+            track $index
+          ) {
+
+            <div class="result-item">
+
+              <span class="item-number">
+                {{ $index + 1 }}
+              </span>
+
+              <span>
+                {{ formatValue(pattern) }}
+              </span>
+
+            </div>
+
+          } @empty {
+
+            <div class="empty-result">
+              No se detectaron patrones.
+            </div>
+
+          }
+
+        </div>
+
+      </article>
+
+
+      <article class="result-card hypothesis-card">
+
+        <div class="result-header">
+
+          <div>
+
+            <span class="card-tag">
+              HIPÓTESIS
+            </span>
+
+            <h2>
+              Hipótesis generadas
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="result-list">
+
+          @for (
+            hypothesis of currentAnalysis.hypotheses;
+            track $index
+          ) {
+
+            <div class="hypothesis-item">
+
+              <span class="item-number">
+                {{ $index + 1 }}
+              </span>
+
+              <div>
+
+                <strong>
+                  Hipótesis {{ $index + 1 }}
+                </strong>
+
+                <p>
+                  {{ formatValue(hypothesis) }}
+                </p>
+
+              </div>
+
+            </div>
+
+          } @empty {
+
+            <div class="empty-result">
+              No se generaron hipótesis.
+            </div>
+
+          }
+
+        </div>
+
+      </article>
+
+    </section>
+
+  }
+
+
+  @if (
+    !loading &&
+    !errorMessage &&
+    !currentAnalysis
+  ) {
+
+    <section class="empty-analysis">
+
+      <div class="empty-icon">
+        IA
+      </div>
+
+      <h2>
+        Todavía no hay análisis
+      </h2>
+
+      <p>
+        Selecciona una fuente y ejecuta un análisis
+        para descubrir conexiones ocultas.
+      </p>
+
+      <a
+        routerLink="/sources"
+        class="primary-button"
+      >
+        Ir a fuentes
+      </a>
+
+    </section>
+
+  }
+
+</div>

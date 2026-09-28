@@ -19,6 +19,10 @@ import {
 } from './features/sources/sources';
 
 import {
+  Analysis
+} from './features/analysis/analysis';
+
+import {
   Graph
 } from './features/graph/graph';
 
@@ -50,6 +54,16 @@ export const routes: Routes = [
       {
         path: 'sources',
         component: Sources
+      },
+
+      {
+        path: 'analysis',
+        component: Analysis
+      },
+
+      {
+        path: 'analysis/source/:sourceId',
+        component: Analysis
       },
 
       {
