@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   OnInit
 } from '@angular/core';
@@ -9,8 +10,13 @@ import {
 
 import {
   DashboardService,
-  DashboardStats
+  DashboardStats,
+  CurrentUser
 } from '../../core/services/dashboard';
+
+import {
+  Auth
+} from '../../core/services/auth';
 
 
 @Component({
@@ -24,8 +30,7 @@ import {
 })
 export class Dashboard implements OnInit {
 
-  userName =
-    'Investigador';
+  userName = 'Investigador';
 
 
   statistics: DashboardStats = {
@@ -43,15 +48,75 @@ export class Dashboard implements OnInit {
 
   loading = true;
 
+  loadingUser = true;
+
 
   constructor(
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private auth: Auth,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
 
   ngOnInit(): void {
 
+    this.loadUser();
+
     this.loadStatistics();
+
+  }
+
+
+  loadUser(): void {
+
+    const token =
+      this.auth.getAccessToken();
+
+
+    if (!token) {
+
+      this.loadingUser = false;
+
+      this.changeDetectorRef.detectChanges();
+
+      return;
+
+    }
+
+
+    this.dashboardService
+      .getCurrentUser(token)
+      .subscribe({
+
+        next: (
+          user: CurrentUser
+        ) => {
+
+          this.userName =
+            user.name;
+
+          this.loadingUser = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        },
+
+        error: (
+          error: any
+        ) => {
+
+          console.error(
+            'Error obteniendo usuario:',
+            error
+          );
+
+          this.loadingUser = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        }
+
+      });
 
   }
 
@@ -59,9 +124,7 @@ export class Dashboard implements OnInit {
   loadStatistics(): void {
 
     const token =
-      localStorage.getItem(
-        'access_token'
-      );
+      this.auth.getAccessToken();
 
 
     if (!token) {
@@ -71,6 +134,8 @@ export class Dashboard implements OnInit {
       );
 
       this.loading = false;
+
+      this.changeDetectorRef.detectChanges();
 
       return;
 
@@ -90,13 +155,14 @@ export class Dashboard implements OnInit {
             data
           );
 
-
-          this.statistics = data;
+          this.statistics =
+            data;
 
           this.loading = false;
 
-        },
+          this.changeDetectorRef.detectChanges();
 
+        },
 
         error: (
           error: any
@@ -107,8 +173,9 @@ export class Dashboard implements OnInit {
             error
           );
 
-
           this.loading = false;
+
+          this.changeDetectorRef.detectChanges();
 
         }
 

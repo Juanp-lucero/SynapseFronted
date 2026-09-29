@@ -1,0 +1,148 @@
+<div class="auth-page">
+
+  <div class="auth-card">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        S
+      </div>
+
+      <div>
+
+        <h1>Synapse IA</h1>
+
+        <p>
+          Sistema inteligente de análisis
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="auth-header">
+
+      <h2>Crear cuenta</h2>
+
+      <p>
+        Crea tu espacio de investigación.
+      </p>
+
+    </div>
+
+
+    @if (errorMessage) {
+
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+
+    }
+
+
+    @if (successMessage) {
+
+      <div class="success-message">
+        {{ successMessage }}
+      </div>
+
+    }
+
+
+    <form
+      (ngSubmit)="register()"
+    >
+
+      <div class="form-group">
+
+        <label for="name">
+          Nombre
+        </label>
+
+        <input
+          id="name"
+          type="text"
+          name="name"
+          [(ngModel)]="user.name"
+          placeholder="Tu nombre"
+          autocomplete="name"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="email">
+          Correo electrónico
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="user.email"
+          placeholder="correo@ejemplo.com"
+          autocomplete="email"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="password">
+          Contraseña
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="user.password"
+          placeholder="Crea una contraseña"
+          autocomplete="new-password"
+        >
+
+      </div>
+
+
+      <button
+        type="submit"
+        [disabled]="loading"
+      >
+
+        @if (loading) {
+
+          Creando cuenta...
+
+        } @else {
+
+          Crear cuenta
+
+        }
+
+      </button>
+
+    </form>
+
+
+    <div class="register-link">
+
+      <span>
+        ¿Ya tienes una cuenta?
+      </span>
+
+      <button
+        type="button"
+        (click)="goToLogin()"
+      >
+        Iniciar sesión
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

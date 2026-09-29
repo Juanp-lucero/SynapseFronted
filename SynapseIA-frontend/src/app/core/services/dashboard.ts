@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable
+} from '@angular/core';
 
 import {
   HttpClient,
@@ -19,6 +21,17 @@ export interface DashboardStats {
   analyses: number;
 
   hypotheses: number;
+
+}
+
+
+export interface CurrentUser {
+
+  id: number;
+
+  name: string;
+
+  email: string;
 
 }
 
@@ -50,6 +63,27 @@ export class DashboardService {
 
     return this.http.get<DashboardStats>(
       `${this.apiUrl}/dashboard/stats`,
+      {
+        headers
+      }
+    );
+
+  }
+
+
+  getCurrentUser(
+    token: string
+  ): Observable<CurrentUser> {
+
+    const headers =
+      new HttpHeaders({
+        Authorization:
+          `Bearer ${token}`
+      });
+
+
+    return this.http.get<CurrentUser>(
+      `${this.apiUrl}/users/me`,
       {
         headers
       }

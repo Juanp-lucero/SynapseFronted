@@ -26,12 +26,20 @@ import {
   Graph
 } from './features/graph/graph';
 
+import {
+  authGuard
+} from './core/guards/auth.guard';
+
 
 export const routes: Routes = [
 
   {
     path: '',
     component: Layout,
+
+    canActivate: [
+      authGuard
+    ],
 
     children: [
 
@@ -78,6 +86,26 @@ export const routes: Routes = [
 
     ]
 
+  },
+
+  {
+    path: 'login',
+    loadComponent: () =>
+      import(
+        './features/login/login'
+      ).then(
+        module => module.Login
+      )
+  },
+
+  {
+    path: 'register',
+    loadComponent: () =>
+      import(
+        './features/register/register'
+      ).then(
+        module => module.Register
+      )
   }
 
 ];

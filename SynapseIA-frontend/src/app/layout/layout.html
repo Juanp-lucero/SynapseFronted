@@ -140,6 +140,30 @@
       </a>
 
 
+      <button
+        class="logout-button"
+        type="button"
+        (click)="logout()"
+        [disabled]="loggingOut"
+      >
+
+        <span class="navigation-icon">
+          ⇥
+        </span>
+
+        <span>
+
+          @if (loggingOut) {
+            Cerrando sesión...
+          } @else {
+            Cerrar sesión
+          }
+
+        </span>
+
+      </button>
+
+
       <div class="system-status">
 
         <span class="status-indicator"></span>
