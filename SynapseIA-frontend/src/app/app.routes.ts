@@ -30,7 +30,6 @@ import {
   authGuard
 } from './core/guards/auth.guard';
 
-
 export const routes: Routes = [
 
   {
@@ -57,6 +56,16 @@ export const routes: Routes = [
       {
         path: 'projects',
         component: Projects
+      },
+
+      {
+        path: 'projects/:projectId',
+        loadComponent: () =>
+          import(
+            './features/project-detail/project-detail'
+          ).then(
+            module => module.ProjectDetail
+          )
       },
 
       {

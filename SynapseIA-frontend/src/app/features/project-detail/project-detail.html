@@ -1,0 +1,386 @@
+<div class="project-detail-page">
+
+  <header class="project-detail-header">
+
+    <div>
+
+      <a
+        routerLink="/projects"
+        class="back-link"
+      >
+        ← Volver a proyectos
+      </a>
+
+      <span class="brand-tag">
+        SYNAPSE IA
+      </span>
+
+      @if (project) {
+
+        <h1>
+          {{ project.name }}
+        </h1>
+
+        <p>
+          @if (project.description) {
+            {{ project.description }}
+          } @else {
+            Este proyecto no tiene descripción.
+          }
+        </p>
+
+      } @else {
+
+        <h1>
+          Proyecto
+        </h1>
+
+      }
+
+    </div>
+
+    @if (project) {
+
+      <div class="project-id">
+        Proyecto #{{ project.id }}
+      </div>
+
+    }
+
+  </header>
+
+
+  @if (loading) {
+
+    <section class="state-card">
+
+      <div class="loader"></div>
+
+      <h2>
+        Cargando proyecto...
+      </h2>
+
+      <p>
+        Consultando la información del proyecto.
+      </p>
+
+    </section>
+
+  }
+
+
+  @if (!loading && errorMessage) {
+
+    <section class="state-card error">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <h2>
+        No se pudo cargar el proyecto
+      </h2>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <a
+        routerLink="/projects"
+        class="primary-button"
+      >
+        Volver a proyectos
+      </a>
+
+    </section>
+
+  }
+
+
+  @if (!loading && !errorMessage && project) {
+
+    <section class="project-overview">
+
+      <article class="overview-card">
+
+        <div class="overview-icon">
+          P
+        </div>
+
+        <div>
+
+          <span>
+            PROYECTO
+          </span>
+
+          <strong>
+            {{ project.name }}
+          </strong>
+
+        </div>
+
+      </article>
+
+
+      <article class="overview-card">
+
+        <div class="overview-icon">
+          F
+        </div>
+
+        <div>
+
+          <span>
+            FUENTES
+          </span>
+
+          <strong>
+            {{ sources.length }}
+          </strong>
+
+        </div>
+
+      </article>
+
+
+      <article class="overview-card">
+
+        <div class="overview-icon">
+          A
+        </div>
+
+        <div>
+
+          <span>
+            ANÁLISIS
+          </span>
+
+          <strong>
+            Próximamente
+          </strong>
+
+        </div>
+
+      </article>
+
+
+      <article class="overview-card">
+
+        <div class="overview-icon">
+          G
+        </div>
+
+        <div>
+
+          <span>
+            KNOWLEDGE GRAPH
+          </span>
+
+          <strong>
+            Disponible
+          </strong>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <section class="workspace-grid">
+
+      <article class="workspace-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <span class="card-tag">
+              FUENTES
+            </span>
+
+            <h2>
+              Documentos del proyecto
+            </h2>
+
+          </div>
+
+          <a
+            routerLink="/sources"
+            class="primary-button"
+          >
+            + Subir fuente
+          </a>
+
+        </div>
+
+
+        @if (loadingSources) {
+
+          <div class="empty-workspace">
+
+            <div class="workspace-icon">
+              ...
+            </div>
+
+            <h3>
+              Cargando fuentes
+            </h3>
+
+            <p>
+              Consultando los documentos de este proyecto.
+            </p>
+
+          </div>
+
+        }
+
+
+        @else if (sourcesErrorMessage) {
+
+          <div class="empty-workspace">
+
+            <div class="workspace-icon">
+              !
+            </div>
+
+            <h3>
+              No se pudieron cargar las fuentes
+            </h3>
+
+            <p>
+              {{ sourcesErrorMessage }}
+            </p>
+
+          </div>
+
+        }
+
+
+        @else if (sources.length === 0) {
+
+          <div class="empty-workspace">
+
+            <div class="workspace-icon">
+              F
+            </div>
+
+            <h3>
+              Todavía no hay fuentes
+            </h3>
+
+            <p>
+              Carga documentos, archivos CSV o
+              información para comenzar el análisis.
+            </p>
+
+            <a
+              routerLink="/sources"
+              class="secondary-button"
+            >
+              Ir a fuentes
+            </a>
+
+          </div>
+
+        }
+
+
+        @else {
+
+          <div class="sources-list">
+
+            @for (
+              source of sources;
+              track source.id
+            ) {
+
+              <div class="source-item">
+
+                <div class="source-icon">
+                  F
+                </div>
+
+                <div class="source-info">
+
+                  <h3>
+                    {{ source.name }}
+                  </h3>
+
+                  <span>
+                    {{ source.type }}
+                  </span>
+
+                </div>
+
+                <a
+                  [routerLink]="[
+                    '/analysis/source',
+                    source.id
+                  ]"
+                  class="secondary-button"
+                >
+                  Analizar
+                </a>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </article>
+
+
+      <article class="workspace-card">
+
+        <div class="card-header">
+
+          <div>
+
+            <span class="card-tag">
+              KNOWLEDGE GRAPH
+            </span>
+
+            <h2>
+              Conexiones
+            </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="empty-workspace">
+
+          <div class="workspace-icon">
+            G
+          </div>
+
+          <h3>
+            Explora las conexiones
+          </h3>
+
+          <p>
+            Visualiza entidades y relaciones
+            encontradas por Synapse IA.
+          </p>
+
+          <a
+            routerLink="/graph"
+            class="secondary-button"
+          >
+            Explorar grafo
+          </a>
+
+        </div>
+
+      </article>
+
+    </section>
+
+  }
+
+</div>
