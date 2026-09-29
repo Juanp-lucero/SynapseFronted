@@ -36,6 +36,19 @@ export interface CurrentUser {
 }
 
 
+export interface DashboardActivity {
+
+  type: 'project' | 'source' | 'analysis';
+
+  title: string;
+
+  description: string;
+
+  id: number;
+
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -84,6 +97,27 @@ export class DashboardService {
 
     return this.http.get<CurrentUser>(
       `${this.apiUrl}/users/me`,
+      {
+        headers
+      }
+    );
+
+  }
+
+
+  getActivity(
+    token: string
+  ): Observable<DashboardActivity[]> {
+
+    const headers =
+      new HttpHeaders({
+        Authorization:
+          `Bearer ${token}`
+      });
+
+
+    return this.http.get<DashboardActivity[]>(
+      `${this.apiUrl}/dashboard/activity`,
       {
         headers
       }

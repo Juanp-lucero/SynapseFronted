@@ -32,6 +32,7 @@
       <button
         class="primary-button"
         type="button"
+        (click)="openCreateForm()"
       >
         + Nuevo proyecto
       </button>
@@ -39,6 +40,117 @@
     </div>
 
   </header>
+
+
+  @if (showCreateForm) {
+
+    <section class="create-project-card">
+
+      <div class="create-project-header">
+
+        <div>
+
+          <span class="card-tag">
+            NUEVO PROYECTO
+          </span>
+
+          <h2>
+            Crear proyecto
+          </h2>
+
+          <p>
+            Define un espacio para organizar
+            tus fuentes y análisis.
+          </p>
+
+        </div>
+
+        <button
+          class="close-button"
+          type="button"
+          (click)="closeCreateForm()"
+          [disabled]="creatingProject"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="project-name">
+          Nombre del proyecto
+        </label>
+
+        <input
+          id="project-name"
+          type="text"
+          [(ngModel)]="projectName"
+          placeholder="Ej. Investigación de mercados"
+          [disabled]="creatingProject"
+        />
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="project-description">
+          Descripción
+        </label>
+
+        <textarea
+          id="project-description"
+          [(ngModel)]="projectDescription"
+          placeholder="Describe brevemente el objetivo del proyecto..."
+          rows="4"
+          [disabled]="creatingProject"
+        ></textarea>
+
+      </div>
+
+
+      @if (errorMessage) {
+
+        <div class="form-error">
+          {{ errorMessage }}
+        </div>
+
+      }
+
+
+      <div class="form-actions">
+
+        <button
+          class="secondary-button"
+          type="button"
+          (click)="closeCreateForm()"
+          [disabled]="creatingProject"
+        >
+          Cancelar
+        </button>
+
+        <button
+          class="primary-button"
+          type="button"
+          (click)="createProject()"
+          [disabled]="creatingProject"
+        >
+
+          @if (creatingProject) {
+            Creando...
+          } @else {
+            Crear proyecto
+          }
+
+        </button>
+
+      </div>
+
+    </section>
+
+  }
 
 
   @if (loading) {
@@ -60,7 +172,7 @@
   }
 
 
-  @if (!loading && errorMessage) {
+  @if (!loading && errorMessage && !showCreateForm) {
 
     <section class="state-card error">
 
@@ -173,6 +285,7 @@
         <button
           class="primary-button"
           type="button"
+          (click)="openCreateForm()"
         >
           Crear primer proyecto
         </button>

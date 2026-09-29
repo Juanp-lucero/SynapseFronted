@@ -11,7 +11,8 @@ import {
 import {
   DashboardService,
   DashboardStats,
-  CurrentUser
+  CurrentUser,
+  DashboardActivity
 } from '../../core/services/dashboard';
 
 import {
@@ -46,9 +47,14 @@ export class Dashboard implements OnInit {
   };
 
 
+  activities: DashboardActivity[] = [];
+
+
   loading = true;
 
   loadingUser = true;
+
+  loadingActivity = true;
 
 
   constructor(
@@ -63,6 +69,8 @@ export class Dashboard implements OnInit {
     this.loadUser();
 
     this.loadStatistics();
+
+    this.loadActivity();
 
   }
 
@@ -174,6 +182,69 @@ export class Dashboard implements OnInit {
           );
 
           this.loading = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  loadActivity(): void {
+
+    const token =
+      this.auth.getAccessToken();
+
+
+    if (!token) {
+
+      console.error(
+        'No existe un token de autenticación'
+      );
+
+      this.loadingActivity = false;
+
+      this.changeDetectorRef.detectChanges();
+
+      return;
+
+    }
+
+
+    this.dashboardService
+      .getActivity(token)
+      .subscribe({
+
+        next: (
+          data: DashboardActivity[]
+        ) => {
+
+          console.log(
+            'Actividad reciente:',
+            data
+          );
+
+          this.activities =
+            data;
+
+          this.loadingActivity = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        },
+
+        error: (
+          error: any
+        ) => {
+
+          console.error(
+            'Error obteniendo actividad:',
+            error
+          );
+
+          this.loadingActivity = false;
 
           this.changeDetectorRef.detectChanges();
 

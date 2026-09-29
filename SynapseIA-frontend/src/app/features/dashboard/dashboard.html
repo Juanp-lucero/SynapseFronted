@@ -180,23 +180,96 @@
       </div>
 
 
-      <div class="empty-state">
+      @if (loadingActivity) {
 
-        <div class="empty-icon">
-          +
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            ...
+          </div>
+
+          <h3>
+            Cargando actividad
+          </h3>
+
+          <p>
+            Consultando los movimientos recientes
+            de Synapse IA.
+          </p>
+
         </div>
 
-        <h3>
-          Aún no hay actividad
-        </h3>
+      } @else if (activities.length === 0) {
 
-        <p>
-          Cuando analices documentos,
-          aquí aparecerán los resultados
-          más recientes.
-        </p>
+        <div class="empty-state">
 
-      </div>
+          <div class="empty-icon">
+            +
+          </div>
+
+          <h3>
+            Aún no hay actividad
+          </h3>
+
+          <p>
+            Cuando crees proyectos, cargues fuentes
+            o ejecutes análisis, aparecerán aquí.
+          </p>
+
+        </div>
+
+      } @else {
+
+        <div class="activity-list">
+
+          @for (
+            activity of activities;
+            track activity.type + '-' + activity.id
+          ) {
+
+            <div class="activity-item">
+
+              <div
+                class="activity-icon"
+                [class.project]="activity.type === 'project'"
+                [class.source]="activity.type === 'source'"
+                [class.analysis]="activity.type === 'analysis'"
+              >
+
+                @if (activity.type === 'project') {
+                  P
+                }
+
+                @if (activity.type === 'source') {
+                  F
+                }
+
+                @if (activity.type === 'analysis') {
+                  A
+                }
+
+              </div>
+
+
+              <div class="activity-content">
+
+                <strong>
+                  {{ activity.title }}
+                </strong>
+
+                <span>
+                  {{ activity.description }}
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
 
     </article>
 

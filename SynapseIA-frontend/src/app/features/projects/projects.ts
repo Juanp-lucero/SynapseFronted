@@ -5,6 +5,10 @@ import {
 } from '@angular/core';
 
 import {
+  FormsModule
+} from '@angular/forms';
+
+import {
   RouterLink
 } from '@angular/router';
 
@@ -18,7 +22,8 @@ import {
   selector: 'app-projects',
   standalone: true,
   imports: [
-    RouterLink
+    RouterLink,
+    FormsModule
   ],
   templateUrl: './projects.html',
   styleUrl: './projects.scss'
@@ -29,7 +34,15 @@ export class Projects implements OnInit {
 
   loading = true;
 
+  creatingProject = false;
+
   errorMessage = '';
+
+  showCreateForm = false;
+
+  projectName = '';
+
+  projectDescription = '';
 
 
   constructor(
@@ -111,6 +124,139 @@ export class Projects implements OnInit {
   }
 
 
+  openCreateForm(): void {
+
+    this.projectName = '';
+
+    this.projectDescription = '';
+
+    this.errorMessage = '';
+
+    this.showCreateForm = true;
+
+    this.changeDetectorRef.detectChanges();
+
+  }
+
+
+  closeCreateForm(): void {
+
+    if (this.creatingProject) {
+      return;
+    }
+
+    this.showCreateForm = false;
+
+    this.projectName = '';
+
+    this.projectDescription = '';
+
+    this.changeDetectorRef.detectChanges();
+
+  }
+
+
+  createProject(): void {
+
+    const token =
+      localStorage.getItem(
+        'access_token'
+      );
+
+
+    if (!token) {
+
+      this.errorMessage =
+        'No existe una sesión activa.';
+
+      return;
+
+    }
+
+
+    const name =
+      this.projectName.trim();
+
+
+    const description =
+      this.projectDescription.trim();
+
+
+    if (!name) {
+
+      this.errorMessage =
+        'El nombre del proyecto es obligatorio.';
+
+      return;
+
+    }
+
+
+    this.creatingProject = true;
+
+    this.errorMessage = '';
+
+
+    this.projectService
+      .createProject(
+        {
+          name,
+          description
+        },
+        token
+      )
+      .subscribe({
+
+        next: (
+          project: Project
+        ) => {
+
+          console.log(
+            'Proyecto creado:',
+            project
+          );
+
+          this.projects = [
+            project,
+            ...this.projects
+          ];
+
+          this.projectName = '';
+
+          this.projectDescription = '';
+
+          this.showCreateForm = false;
+
+          this.creatingProject = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        },
+
+        error: (
+          error: any
+        ) => {
+
+          console.error(
+            'Error creando proyecto:',
+            error
+          );
+
+          this.errorMessage =
+            error?.error?.detail ||
+            'No fue posible crear el proyecto.';
+
+          this.creatingProject = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
   deleteProject(
     project: Project
   ): void {
@@ -164,6 +310,12 @@ export class Projects implements OnInit {
             'Error eliminando proyecto:',
             error
           );
+
+          this.errorMessage =
+            error?.error?.detail ||
+            'No fue posible eliminar el proyecto.';
+
+          this.changeDetectorRef.detectChanges();
 
         }
 
