@@ -2,15 +2,23 @@
 
   <header class="graph-header">
 
-    <div>
+    <div class="title-section">
+
+      <span class="brand-tag">
+        SYNAPSE IA
+      </span>
 
       <h1>
-        Synapse IA
+        {{ graphTitle }}
       </h1>
 
       <p>
-        Knowledge Graph
+        {{ graphDescription }}
       </p>
+
+      <span class="graph-context">
+        {{ graphContext }}
+      </span>
 
     </div>
 
@@ -18,121 +26,92 @@
       class="load-button"
       type="button"
       (click)="loadGraph()"
+      [disabled]="loading"
     >
-      Cargar grafo
+
+      @if (loading) {
+
+        Cargando...
+
+      } @else {
+
+        Cargar grafo
+
+      }
+
     </button>
 
   </header>
 
 
-  <main class="graph-content">
+  @if (errorMessage) {
 
-    <section
-      class="graph-card"
-      [class.panel-open]="selectedNode"
-    >
+    <section class="graph-message error">
 
-      <div
-        #graphContainer
-        class="graph-container"
-      ></div>
+      <div class="message-icon">
+        !
+      </div>
+
+      <h2>
+        No se pudo cargar el grafo
+      </h2>
+
+      <p>
+        {{ errorMessage }}
+      </p>
+
+      <button
+        class="retry-button"
+        type="button"
+        (click)="loadGraph()"
+      >
+        Intentar nuevamente
+      </button>
 
     </section>
 
+  }
 
-    @if (selectedNode; as node) {
 
-      <aside class="node-panel">
+  @if (!errorMessage) {
 
-        <div class="panel-header">
+    <main class="graph-content">
 
-          <div>
+      <section
+        class="graph-card"
+        [class.panel-open]="selectedNode"
+      >
 
-            <span class="panel-label">
-              NODO SELECCIONADO
-            </span>
+        <div class="graph-toolbar">
 
-            <h2>
-              {{ node.label }}
-            </h2>
+          <div class="toolbar-info">
+
+            <span class="status-dot"></span>
+
+            @if (loading) {
+
+              Consultando Knowledge Graph
+
+            } @else {
+
+              Grafo conectado
+
+            }
 
           </div>
 
-          <button
-            class="close-button"
-            type="button"
-            (click)="closeNodePanel()"
-          >
-            ×
-          </button>
 
-        </div>
+          @if (graphData) {
 
+            <div class="node-counter">
 
-        <div class="node-type">
+              {{ graphData.nodes?.length || 0 }}
+              nodos
 
-          <span>
-            Tipo
-          </span>
+              ·
 
-          <strong>
-            {{ node.type }}
-          </strong>
-
-        </div>
-
-
-        <div class="properties-section">
-
-          <h3>
-            Propiedades
-          </h3>
-
-
-          @if (node.properties; as properties) {
-
-            <div class="properties-list">
-
-              @for (
-                property of properties | keyvalue;
-                track property.key
-              ) {
-
-                <div class="property">
-
-                  <span class="property-name">
-                    {{ property.key }}
-                  </span>
-
-                  <span class="property-value">
-
-                    @if (
-                      property.value !== null &&
-                      property.value !== undefined
-                    ) {
-
-                      {{ property.value }}
-
-                    } @else {
-
-                      Sin información
-
-                    }
-
-                  </span>
-
-                </div>
-
-              }
-
-            </div>
-
-          } @else {
-
-            <div class="empty-properties">
-
-              Este nodo no contiene
-              propiedades adicionales.
+              {{ graphData.relationships?.length || 0 }}
+              relaciones
 
             </div>
 
@@ -141,22 +120,166 @@
         </div>
 
 
-        <div class="node-id">
+        <div
+          #graphContainer
+          class="graph-container"
+        ></div>
 
-          <span>
-            ID del nodo
-          </span>
 
-          <code>
-            {{ node.id }}
-          </code>
+        @if (
+          !loading &&
+          graphData &&
+          graphData.nodes?.length === 0
+        ) {
 
-        </div>
+          <div class="graph-empty">
 
-      </aside>
+            <div class="empty-graph-icon">
+              G
+            </div>
 
-    }
+            <h2>
+              No hay datos para visualizar
+            </h2>
 
-  </main>
+            <p>
+              Todavía no existen entidades o relaciones
+              analizadas para este contexto.
+            </p>
+
+            <a
+              routerLink="/sources"
+              class="secondary-button"
+            >
+              Ir a fuentes
+            </a>
+
+          </div>
+
+        }
+
+      </section>
+
+
+      @if (selectedNode; as node) {
+
+        <aside class="node-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <span class="panel-label">
+                NODO SELECCIONADO
+              </span>
+
+              <h2>
+                {{ node.label }}
+              </h2>
+
+            </div>
+
+            <button
+              class="close-button"
+              type="button"
+              (click)="closeNodePanel()"
+            >
+              ×
+            </button>
+
+          </div>
+
+
+          <div class="node-type">
+
+            <span>
+              Tipo
+            </span>
+
+            <strong>
+              {{ node.type }}
+            </strong>
+
+          </div>
+
+
+          <div class="properties-section">
+
+            <h3>
+              Propiedades
+            </h3>
+
+
+            @if (node.properties; as properties) {
+
+              <div class="properties-list">
+
+                @for (
+                  property of properties | keyvalue;
+                  track property.key
+                ) {
+
+                  <div class="property">
+
+                    <span class="property-name">
+                      {{ property.key }}
+                    </span>
+
+                    <span class="property-value">
+
+                      @if (
+                        property.value !== null &&
+                        property.value !== undefined
+                      ) {
+
+                        {{ property.value }}
+
+                      } @else {
+
+                        Sin información
+
+                      }
+
+                    </span>
+
+                  </div>
+
+                }
+
+              </div>
+
+            } @else {
+
+              <div class="empty-properties">
+
+                Este nodo no contiene
+                propiedades adicionales.
+
+              </div>
+
+            }
+
+          </div>
+
+
+          <div class="node-id">
+
+            <span>
+              ID del nodo
+            </span>
+
+            <code>
+              {{ node.id }}
+            </code>
+
+          </div>
+
+        </aside>
+
+      }
+
+    </main>
+
+  }
 
 </div>

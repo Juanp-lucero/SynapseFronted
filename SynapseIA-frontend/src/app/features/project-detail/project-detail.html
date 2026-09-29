@@ -1,8 +1,8 @@
 <div class="project-detail-page">
 
-  <header class="project-detail-header">
+  <header class="project-header">
 
-    <div>
+    <div class="header-left">
 
       <a
         routerLink="/projects"
@@ -11,41 +11,37 @@
         ← Volver a proyectos
       </a>
 
-      <span class="brand-tag">
-        SYNAPSE IA
-      </span>
-
       @if (project) {
 
-        <h1>
-          {{ project.name }}
-        </h1>
+        <div class="project-title">
 
-        <p>
+          <span class="project-label">
+            PROYECTO
+          </span>
+
+          <h1>
+            {{ project.name }}
+          </h1>
+
           @if (project.description) {
-            {{ project.description }}
+
+            <p>
+              {{ project.description }}
+            </p>
+
           } @else {
-            Este proyecto no tiene descripción.
+
+            <p>
+              Proyecto de investigación inteligente
+            </p>
+
           }
-        </p>
 
-      } @else {
-
-        <h1>
-          Proyecto
-        </h1>
+        </div>
 
       }
 
     </div>
-
-    @if (project) {
-
-      <div class="project-id">
-        Proyecto #{{ project.id }}
-      </div>
-
-    }
 
   </header>
 
@@ -54,14 +50,16 @@
 
     <section class="state-card">
 
-      <div class="loader"></div>
+      <div class="state-icon">
+        ...
+      </div>
 
       <h2>
-        Cargando proyecto...
+        Cargando proyecto
       </h2>
 
       <p>
-        Consultando la información del proyecto.
+        Estamos obteniendo la información del proyecto.
       </p>
 
     </section>
@@ -71,9 +69,9 @@
 
   @if (!loading && errorMessage) {
 
-    <section class="state-card error">
+    <section class="state-card error-state">
 
-      <div class="error-icon">
+      <div class="state-icon">
         !
       </div>
 
@@ -99,117 +97,197 @@
 
   @if (!loading && !errorMessage && project) {
 
-    <section class="project-overview">
-
-      <article class="overview-card">
-
-        <div class="overview-icon">
-          P
-        </div>
-
-        <div>
-
-          <span>
-            PROYECTO
-          </span>
-
-          <strong>
-            {{ project.name }}
-          </strong>
-
-        </div>
-
-      </article>
+    <main class="project-content">
 
 
-      <article class="overview-card">
+      <section class="overview-grid">
 
-        <div class="overview-icon">
-          F
-        </div>
+        <article class="overview-card">
 
-        <div>
-
-          <span>
-            FUENTES
-          </span>
-
-          <strong>
-            {{ sources.length }}
-          </strong>
-
-        </div>
-
-      </article>
-
-
-      <article class="overview-card">
-
-        <div class="overview-icon">
-          A
-        </div>
-
-        <div>
-
-          <span>
-            ANÁLISIS
-          </span>
-
-          <strong>
-            Próximamente
-          </strong>
-
-        </div>
-
-      </article>
-
-
-      <article class="overview-card">
-
-        <div class="overview-icon">
-          G
-        </div>
-
-        <div>
-
-          <span>
-            KNOWLEDGE GRAPH
-          </span>
-
-          <strong>
-            Disponible
-          </strong>
-
-        </div>
-
-      </article>
-
-    </section>
-
-
-    <section class="workspace-grid">
-
-      <article class="workspace-card">
-
-        <div class="card-header">
+          <div class="overview-icon">
+            P
+          </div>
 
           <div>
 
-            <span class="card-tag">
-              FUENTES
+            <span>
+              Proyecto
+            </span>
+
+            <strong>
+              #{{ project.id }}
+            </strong>
+
+          </div>
+
+        </article>
+
+
+        <article class="overview-card">
+
+          <div class="overview-icon">
+            F
+          </div>
+
+          <div>
+
+            <span>
+              Fuentes
+            </span>
+
+            <strong>
+              {{ sources.length }}
+            </strong>
+
+          </div>
+
+        </article>
+
+
+        <article class="overview-card">
+
+          <div class="overview-icon">
+            A
+          </div>
+
+          <div>
+
+            <span>
+              Análisis
+            </span>
+
+            <strong>
+              Próximamente
+            </strong>
+
+          </div>
+
+        </article>
+
+
+        <article class="overview-card">
+
+          <div class="overview-icon">
+            G
+          </div>
+
+          <div>
+
+            <span>
+              Knowledge Graph
+            </span>
+
+            <strong>
+              Disponible
+            </strong>
+
+          </div>
+
+        </article>
+
+      </section>
+
+
+      <section class="workspace-section">
+
+        <div class="section-header">
+
+          <div>
+
+            <span class="section-label">
+              INFORMACIÓN DEL PROYECTO
             </span>
 
             <h2>
-              Documentos del proyecto
+              Resumen
             </h2>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+          <div class="summary-item">
+
+            <span class="summary-title">
+              Nombre
+            </span>
+
+            <span class="summary-value">
+              {{ project.name }}
+            </span>
+
+          </div>
+
+
+          <div class="summary-item">
+
+            <span class="summary-title">
+              Descripción
+            </span>
+
+            <span class="summary-value">
+
+              @if (project.description) {
+
+                {{ project.description }}
+
+              } @else {
+
+                Este proyecto no tiene una descripción registrada.
+
+              }
+
+            </span>
+
+          </div>
+
+
+          <div class="summary-item">
+
+            <span class="summary-title">
+              Identificador
+            </span>
+
+            <span class="summary-value">
+              #{{ project.id }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="workspace-section">
+
+        <div class="section-header">
+
+          <div>
+
+            <span class="section-label">
+              FUENTES DE INFORMACIÓN
+            </span>
+
+            <h2>
+              Fuentes del proyecto
+            </h2>
+
+            <p>
+              Documentos y archivos utilizados como base
+              para el análisis inteligente.
+            </p>
 
           </div>
 
           <a
             routerLink="/sources"
-            class="primary-button"
+            class="secondary-button"
           >
-            + Subir fuente
+            Gestionar fuentes
           </a>
 
         </div>
@@ -219,7 +297,7 @@
 
           <div class="empty-workspace">
 
-            <div class="workspace-icon">
+            <div class="empty-icon">
               ...
             </div>
 
@@ -228,7 +306,8 @@
             </h3>
 
             <p>
-              Consultando los documentos de este proyecto.
+              Estamos consultando las fuentes asociadas
+              a este proyecto.
             </p>
 
           </div>
@@ -236,11 +315,11 @@
         }
 
 
-        @else if (sourcesErrorMessage) {
+        @if (!loadingSources && sourcesErrorMessage) {
 
-          <div class="empty-workspace">
+          <div class="empty-workspace error-workspace">
 
-            <div class="workspace-icon">
+            <div class="empty-icon">
               !
             </div>
 
@@ -257,28 +336,32 @@
         }
 
 
-        @else if (sources.length === 0) {
+        @if (
+          !loadingSources &&
+          !sourcesErrorMessage &&
+          sources.length === 0
+        ) {
 
           <div class="empty-workspace">
 
-            <div class="workspace-icon">
+            <div class="empty-icon">
               F
             </div>
 
             <h3>
-              Todavía no hay fuentes
+              Este proyecto todavía no tiene fuentes
             </h3>
 
             <p>
-              Carga documentos, archivos CSV o
-              información para comenzar el análisis.
+              Agrega documentos para comenzar el proceso
+              de extracción y análisis de información.
             </p>
 
             <a
               routerLink="/sources"
-              class="secondary-button"
+              class="primary-button"
             >
-              Ir a fuentes
+              Agregar fuente
             </a>
 
           </div>
@@ -286,7 +369,11 @@
         }
 
 
-        @else {
+        @if (
+          !loadingSources &&
+          !sourcesErrorMessage &&
+          sources.length > 0
+        ) {
 
           <div class="sources-list">
 
@@ -295,35 +382,76 @@
               track source.id
             ) {
 
-              <div class="source-item">
+              <article class="source-card">
 
-                <div class="source-icon">
-                  F
+                <div class="source-main">
+
+                  <div class="source-icon">
+                    F
+                  </div>
+
+                  <div class="source-information">
+
+                    <h3>
+                      {{ source.name }}
+                    </h3>
+
+                    <div class="source-meta">
+
+                      <span>
+                        Tipo: {{ source.type }}
+                      </span>
+
+                      <span>
+                        Fuente #{{ source.id }}
+                      </span>
+
+                    </div>
+
+                    @if (source.description) {
+
+                      <p>
+                        {{ source.description }}
+                      </p>
+
+                    } @else {
+
+                      <p>
+                        Sin descripción disponible.
+                      </p>
+
+                    }
+
+                  </div>
+
                 </div>
 
-                <div class="source-info">
 
-                  <h3>
-                    {{ source.name }}
-                  </h3>
+                <div class="source-actions">
 
-                  <span>
-                    {{ source.type }}
-                  </span>
+                  <a
+                    [routerLink]="[
+                      '/analysis/source',
+                      source.id
+                    ]"
+                    class="secondary-button"
+                  >
+                    Analizar
+                  </a>
+
+                  <a
+                    [routerLink]="[
+                      '/graph/source',
+                      source.id
+                    ]"
+                    class="primary-button"
+                  >
+                    Ver grafo
+                  </a>
 
                 </div>
 
-                <a
-                  [routerLink]="[
-                    '/analysis/source',
-                    source.id
-                  ]"
-                  class="secondary-button"
-                >
-                  Analizar
-                </a>
-
-              </div>
+              </article>
 
             }
 
@@ -331,55 +459,116 @@
 
         }
 
-      </article>
+      </section>
 
 
-      <article class="workspace-card">
+      <section class="workspace-section">
 
-        <div class="card-header">
+        <div class="section-header">
 
           <div>
 
-            <span class="card-tag">
-              KNOWLEDGE GRAPH
+            <span class="section-label">
+              INTELIGENCIA DE DATOS
             </span>
 
             <h2>
-              Conexiones
+              Knowledge Graph
             </h2>
+
+            <p>
+              Explora las entidades, relaciones y patrones
+              encontrados dentro de las fuentes de este proyecto.
+            </p>
 
           </div>
 
         </div>
 
 
-        <div class="empty-workspace">
+        <div class="graph-workspace">
 
-          <div class="workspace-icon">
+          <div class="graph-workspace-icon">
             G
           </div>
 
-          <h3>
-            Explora las conexiones
-          </h3>
 
-          <p>
-            Visualiza entidades y relaciones
-            encontradas por Synapse IA.
-          </p>
+          <div class="graph-workspace-content">
 
-          <a
-            routerLink="/graph"
-            class="secondary-button"
-          >
-            Explorar grafo
-          </a>
+            <h3>
+              Explorar conexiones del proyecto
+            </h3>
+
+            <p>
+              Visualiza las conexiones detectadas entre
+              documentos, entidades, conceptos, patrones
+              e hipótesis pertenecientes a este proyecto.
+            </p>
+
+
+            <a
+              [routerLink]="[
+                '/graph/project',
+                project.id
+              ]"
+              class="secondary-button"
+            >
+              Explorar grafo
+            </a>
+
+          </div>
 
         </div>
 
-      </article>
+      </section>
 
-    </section>
+
+      <section class="workspace-section">
+
+        <div class="section-header">
+
+          <div>
+
+            <span class="section-label">
+              ANÁLISIS INTELIGENTE
+            </span>
+
+            <h2>
+              Resultados del proyecto
+            </h2>
+
+            <p>
+              Los resultados de análisis, patrones e hipótesis
+              se mostrarán aquí conforme se procesen las fuentes.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="analysis-placeholder">
+
+          <div class="analysis-placeholder-icon">
+            AI
+          </div>
+
+          <h3>
+            Análisis inteligente
+          </h3>
+
+          <p>
+            Esta sección se conectará con el motor de análisis
+            de Synapse IA para mostrar entidades, relaciones,
+            patrones e hipótesis detectadas.
+          </p>
+
+        </div>
+
+      </section>
+
+
+    </main>
 
   }
 

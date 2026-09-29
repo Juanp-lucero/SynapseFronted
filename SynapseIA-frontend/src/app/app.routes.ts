@@ -89,6 +89,11 @@ export const routes: Routes = [
       },
 
       {
+        path: 'graph/project/:projectId',
+        component: Graph
+      },
+
+      {
         path: 'graph/source/:sourceId',
         component: Graph
       }

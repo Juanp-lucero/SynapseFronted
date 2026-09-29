@@ -17,8 +17,9 @@ import {
 
 import cytoscape from 'cytoscape';
 
-import { GraphService } from '../../core/services/graph';
-
+import {
+  GraphService
+} from '../../core/services/graph';
 
 @Component({
   selector: 'app-graph',
@@ -38,10 +39,20 @@ export class Graph implements AfterViewInit {
 
   selectedNode: any = null;
 
+  loading = false;
+
+  errorMessage = '';
+
+  graphTitle = 'Knowledge Graph';
+
+  graphDescription =
+    'Explora las conexiones descubiertas por Synapse IA.';
+
+  graphContext = 'Explorador general';
+
   private cy: cytoscape.Core | null = null;
 
   private viewReady = false;
-
 
   constructor(
     private graphService: GraphService,
@@ -49,7 +60,6 @@ export class Graph implements AfterViewInit {
     private changeDetectorRef: ChangeDetectorRef,
     private route: ActivatedRoute
   ) {}
-
 
   ngAfterViewInit(): void {
 
@@ -59,7 +69,6 @@ export class Graph implements AfterViewInit {
 
   }
 
-
   loadGraph(): void {
 
     const token =
@@ -67,103 +76,161 @@ export class Graph implements AfterViewInit {
         'access_token'
       );
 
-
     if (!token) {
 
-      console.error(
-        'No existe un token de autenticación'
-      );
+      this.errorMessage =
+        'No existe un token de autenticación.';
+
+      this.changeDetectorRef.detectChanges();
 
       return;
 
     }
-
 
     const sourceIdParam =
       this.route.snapshot.paramMap.get(
         'sourceId'
       );
 
-
-    if (!sourceIdParam) {
-
-      console.error(
-        'No se especificó una fuente para el grafo'
+    const projectIdParam =
+      this.route.snapshot.paramMap.get(
+        'projectId'
       );
 
-      return;
+    this.loading = true;
 
+    this.errorMessage = '';
+
+    this.selectedNode = null;
+
+    if (sourceIdParam) {
+
+      const sourceId =
+        Number(sourceIdParam);
+
+      if (Number.isNaN(sourceId)) {
+
+        this.loading = false;
+
+        this.errorMessage =
+          'El ID de la fuente no es válido.';
+
+        this.changeDetectorRef.detectChanges();
+
+        return;
+      }
+
+      this.graphTitle =
+        'Knowledge Graph de la fuente';
+
+      this.graphDescription =
+        'Conexiones encontradas en esta fuente.';
+
+      this.graphContext =
+        `Fuente #${sourceId}`;
+
+      this.graphService
+        .getSourceGraph(
+          sourceId,
+          token
+        )
+        .subscribe({
+
+          next: (data: any) => {
+
+            this.handleGraphData(data);
+
+          },
+
+          error: (error: any) => {
+
+            this.handleGraphError(
+              error
+            );
+
+          }
+
+        });
+
+      return;
     }
 
+    if (projectIdParam) {
 
-    const sourceId =
-      Number(sourceIdParam);
+      const projectId =
+        Number(projectIdParam);
 
+      if (Number.isNaN(projectId)) {
 
-    if (Number.isNaN(sourceId)) {
+        this.loading = false;
 
-      console.error(
-        'El ID de la fuente no es válido'
-      );
+        this.errorMessage =
+          'El ID del proyecto no es válido.';
+
+        this.changeDetectorRef.detectChanges();
+
+        return;
+      }
+
+      this.graphTitle =
+        'Knowledge Graph del proyecto';
+
+      this.graphDescription =
+        'Conexiones encontradas dentro de este proyecto.';
+
+      this.graphContext =
+        `Proyecto #${projectId}`;
+
+      this.graphService
+        .getProjectGraph(
+          projectId,
+          token
+        )
+        .subscribe({
+
+          next: (data: any) => {
+
+            this.handleGraphData(data);
+
+          },
+
+          error: (error: any) => {
+
+            this.handleGraphError(
+              error
+            );
+
+          }
+
+        });
 
       return;
-
     }
 
+    this.graphTitle =
+      'Knowledge Graph';
 
-    console.log(
-      'Cargando grafo de la fuente:',
-      sourceId
-    );
+    this.graphDescription =
+      'Explora las conexiones descubiertas por Synapse IA.';
 
+    this.graphContext =
+      'Todos tus proyectos';
 
     this.graphService
-      .getSourceGraph(
-        sourceId,
+      .getGraph(
         token
       )
       .subscribe({
 
-        next: (
-          data: any
-        ) => {
+        next: (data: any) => {
 
-          console.log(
-            'Datos del grafo:',
-            data
-          );
-
-
-          this.ngZone.run(() => {
-
-            this.graphData =
-              data;
-
-
-            this.selectedNode =
-              null;
-
-
-            this.changeDetectorRef.detectChanges();
-
-
-            if (this.viewReady) {
-
-              this.renderGraph();
-
-            }
-
-          });
+          this.handleGraphData(data);
 
         },
 
+        error: (error: any) => {
 
-        error: (
-          error: any
-        ) => {
-
-          console.error(
-            'Error obteniendo el grafo:',
+          this.handleGraphError(
             error
           );
 
@@ -173,6 +240,75 @@ export class Graph implements AfterViewInit {
 
   }
 
+  private handleGraphData(
+    data: any
+  ): void {
+
+    console.log(
+      'Datos del grafo:',
+      data
+    );
+
+    this.ngZone.run(() => {
+
+      this.graphData =
+        data;
+
+      this.loading = false;
+
+      this.selectedNode =
+        null;
+
+      this.errorMessage =
+        '';
+
+      this.changeDetectorRef.detectChanges();
+
+      if (this.viewReady) {
+
+        this.renderGraph();
+
+      }
+
+    });
+
+  }
+
+  private handleGraphError(
+    error: any
+  ): void {
+
+    console.error(
+      'Error obteniendo el grafo:',
+      error
+    );
+
+    this.ngZone.run(() => {
+
+      this.loading = false;
+
+      if (error.status === 404) {
+
+        this.errorMessage =
+          'No se encontró información para construir este grafo.';
+
+      } else if (error.status === 403) {
+
+        this.errorMessage =
+          'No tienes permiso para consultar este grafo.';
+
+      } else {
+
+        this.errorMessage =
+          'No fue posible cargar el Knowledge Graph.';
+
+      }
+
+      this.changeDetectorRef.detectChanges();
+
+    });
+
+  }
 
   closeNodePanel(): void {
 
@@ -181,13 +317,11 @@ export class Graph implements AfterViewInit {
       this.selectedNode =
         null;
 
-
       this.changeDetectorRef.detectChanges();
 
     });
 
   }
-
 
   private renderGraph(): void {
 
@@ -197,13 +331,11 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (!this.graphData) {
 
       return;
 
     }
-
 
     if (this.cy) {
 
@@ -213,30 +345,24 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     const nodes =
       this.graphData.nodes || [];
-
 
     const relationships =
       this.graphData.relationships || [];
 
-
     const elements:
       cytoscape.ElementDefinition[] = [];
-
 
     for (const node of nodes) {
 
       const properties =
         node.properties || {};
 
-
       const id =
         this.getNodeId(
           properties
         );
-
 
       const label =
         this.getNodeLabel(
@@ -244,20 +370,17 @@ export class Graph implements AfterViewInit {
           node.labels
         );
 
-
       const nodeType =
         this.getNodeType(
           properties,
           node.labels
         );
 
-
       if (!id) {
 
         continue;
 
       }
-
 
       elements.push({
 
@@ -277,7 +400,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     for (
       const relationship
       of relationships
@@ -288,12 +410,10 @@ export class Graph implements AfterViewInit {
           relationship.source
         );
 
-
       const target =
         this.getNodeId(
           relationship.target
         );
-
 
       if (
         !source ||
@@ -303,7 +423,6 @@ export class Graph implements AfterViewInit {
         continue;
 
       }
-
 
       elements.push({
 
@@ -325,16 +444,13 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     this.cy =
       cytoscape({
 
         container:
           this.graphContainer.nativeElement,
 
-
         elements,
-
 
         layout: {
 
@@ -351,7 +467,6 @@ export class Graph implements AfterViewInit {
           gravity: 0.25
 
         },
-
 
         style: [
 
@@ -404,7 +519,6 @@ export class Graph implements AfterViewInit {
 
           },
 
-
           {
 
             selector:
@@ -428,7 +542,6 @@ export class Graph implements AfterViewInit {
 
           },
 
-
           {
 
             selector:
@@ -442,7 +555,6 @@ export class Graph implements AfterViewInit {
             }
 
           },
-
 
           {
 
@@ -464,7 +576,6 @@ export class Graph implements AfterViewInit {
 
           },
 
-
           {
 
             selector:
@@ -484,7 +595,6 @@ export class Graph implements AfterViewInit {
             }
 
           },
-
 
           {
 
@@ -509,7 +619,6 @@ export class Graph implements AfterViewInit {
 
           },
 
-
           {
 
             selector:
@@ -529,7 +638,6 @@ export class Graph implements AfterViewInit {
             }
 
           },
-
 
           {
 
@@ -555,7 +663,6 @@ export class Graph implements AfterViewInit {
             }
 
           },
-
 
           {
 
@@ -587,7 +694,6 @@ export class Graph implements AfterViewInit {
 
       });
 
-
     this.cy.on(
       'tap',
       'node',
@@ -596,10 +702,8 @@ export class Graph implements AfterViewInit {
         const node =
           event.target;
 
-
         const data =
           node.data();
-
 
         const selectedNode = {
 
@@ -617,18 +721,15 @@ export class Graph implements AfterViewInit {
 
         };
 
-
         console.log(
           'Nodo seleccionado:',
           selectedNode
         );
 
-
         this.ngZone.run(() => {
 
           this.selectedNode =
             selectedNode;
-
 
           this.changeDetectorRef.detectChanges();
 
@@ -636,7 +737,6 @@ export class Graph implements AfterViewInit {
 
       }
     );
-
 
     this.cy.on(
       'tap',
@@ -651,7 +751,6 @@ export class Graph implements AfterViewInit {
             this.selectedNode =
               null;
 
-
             this.changeDetectorRef.detectChanges();
 
           });
@@ -663,7 +762,6 @@ export class Graph implements AfterViewInit {
 
   }
 
-
   private getNodeId(
     properties: any
   ): string {
@@ -674,7 +772,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       properties.source_id !== undefined &&
       properties.name
@@ -683,7 +780,6 @@ export class Graph implements AfterViewInit {
       return `document-${properties.source_id}`;
 
     }
-
 
     if (
       properties.source_id !== undefined &&
@@ -696,7 +792,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       properties.name &&
       properties.type
@@ -707,7 +802,6 @@ export class Graph implements AfterViewInit {
       );
 
     }
-
 
     if (
       properties.type &&
@@ -720,13 +814,11 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     return JSON.stringify(
       properties
     );
 
   }
-
 
   private getNodeLabel(
     properties: any,
@@ -739,13 +831,11 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (properties.name) {
 
       return properties.name;
 
     }
-
 
     if (properties.title) {
 
@@ -753,13 +843,11 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (properties.type) {
 
       return properties.type;
 
     }
-
 
     if (
       labels &&
@@ -770,11 +858,9 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     return 'Nodo';
 
   }
-
 
   private getNodeType(
     properties: any,
@@ -787,7 +873,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       properties.source_id !== undefined &&
       properties.name
@@ -796,7 +881,6 @@ export class Graph implements AfterViewInit {
       return 'DOCUMENT';
 
     }
-
 
     if (
       properties.source_id !== undefined &&
@@ -807,7 +891,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       properties.type &&
       properties.description
@@ -817,7 +900,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       properties.type === 'NUMBER'
     ) {
@@ -826,7 +908,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       properties.type === 'METRIC'
     ) {
@@ -834,7 +915,6 @@ export class Graph implements AfterViewInit {
       return 'METRIC';
 
     }
-
 
     if (
       properties.name &&
@@ -845,7 +925,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       labels &&
       labels.includes('Document')
@@ -854,7 +933,6 @@ export class Graph implements AfterViewInit {
       return 'DOCUMENT';
 
     }
-
 
     if (
       labels &&
@@ -865,7 +943,6 @@ export class Graph implements AfterViewInit {
 
     }
 
-
     if (
       labels &&
       labels.includes('Pattern')
@@ -874,7 +951,6 @@ export class Graph implements AfterViewInit {
       return 'PATTERN';
 
     }
-
 
     return 'ENTITY';
 
