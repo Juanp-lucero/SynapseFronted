@@ -10,6 +10,7 @@ import {
   Observable,
   tap
 } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 
 export interface LoginRequest {
@@ -48,8 +49,7 @@ export interface AuthResponse {
 })
 export class Auth {
 
-  private apiUrl =
-    'http://127.0.0.1:8000';
+  private apiUrl = environment.apiUrl;
 
 
   constructor(

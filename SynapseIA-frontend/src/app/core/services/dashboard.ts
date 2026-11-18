@@ -10,6 +10,7 @@ import {
 import {
   Observable
 } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 
 export interface DashboardStats {
@@ -54,8 +55,7 @@ export interface DashboardActivity {
 })
 export class DashboardService {
 
-  private apiUrl =
-    'http://127.0.0.1:8000';
+  private apiUrl = environment.apiUrl;
 
 
   constructor(

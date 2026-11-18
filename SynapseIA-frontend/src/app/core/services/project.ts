@@ -8,6 +8,7 @@ import {
 import {
   Observable
 } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 
 export interface Project {
@@ -37,8 +38,7 @@ export interface ProjectCreate {
 })
 export class ProjectService {
 
-  private apiUrl =
-    'http://127.0.0.1:8000';
+  private apiUrl = environment.apiUrl;
 
 
   constructor(

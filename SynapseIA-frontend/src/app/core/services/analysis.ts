@@ -8,6 +8,7 @@ import {
 import {
   Observable
 } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 
 export interface AnalysisResult {
@@ -36,8 +37,7 @@ export interface AnalysisResult {
 })
 export class AnalysisService {
 
-  private apiUrl =
-    'http://127.0.0.1:8000';
+  private apiUrl = environment.apiUrl;
 
 
   constructor(
