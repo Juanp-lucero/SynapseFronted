@@ -71,22 +71,6 @@ export class Graph implements AfterViewInit {
 
   loadGraph(): void {
 
-    const token =
-      localStorage.getItem(
-        'access_token'
-      );
-
-    if (!token) {
-
-      this.errorMessage =
-        'No existe un token de autenticación.';
-
-      this.changeDetectorRef.detectChanges();
-
-      return;
-
-    }
-
     const sourceIdParam =
       this.route.snapshot.paramMap.get(
         'sourceId'
@@ -131,8 +115,7 @@ export class Graph implements AfterViewInit {
 
       this.graphService
         .getSourceGraph(
-          sourceId,
-          token
+          sourceId
         )
         .subscribe({
 
@@ -183,8 +166,7 @@ export class Graph implements AfterViewInit {
 
       this.graphService
         .getProjectGraph(
-          projectId,
-          token
+          projectId
         )
         .subscribe({
 
@@ -217,9 +199,7 @@ export class Graph implements AfterViewInit {
       'Todos tus proyectos';
 
     this.graphService
-      .getGraph(
-        token
-      )
+      .getGraph()
       .subscribe({
 
         next: (data: any) => {
