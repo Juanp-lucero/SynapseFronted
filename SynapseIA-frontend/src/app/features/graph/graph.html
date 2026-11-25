@@ -153,6 +153,14 @@
               Reorganizar
             </button>
 
+            <button
+              type="button"
+              (click)="exportPng()"
+              [disabled]="!graphData?.nodes?.length"
+            >
+              Exportar PNG
+            </button>
+
           </div>
 
 

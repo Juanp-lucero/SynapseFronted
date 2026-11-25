@@ -423,6 +423,36 @@ export class Graph implements AfterViewInit {
   }
 
 
+  /** Download the current view of the graph as a PNG image. */
+  exportPng(): void {
+
+    if (!this.cy) {
+      return;
+    }
+
+    const dataUrl =
+      this.cy.png({
+        full: true,
+        scale: 2,
+        bg: '#ffffff'
+      });
+
+    const link =
+      document.createElement('a');
+
+    link.href = dataUrl;
+
+    link.download =
+      `synapse-grafo-${this.graphContext
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')}.png`;
+
+    link.click();
+
+  }
+
+
   isTypeVisible(
     type: GraphNodeType
   ): boolean {
