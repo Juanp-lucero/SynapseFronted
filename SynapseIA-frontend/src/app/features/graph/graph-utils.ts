@@ -1,0 +1,126 @@
+import {
+  GraphNodeProperties,
+  GraphNodeType
+} from '../../core/models/graph.models';
+
+/** Entity types produced by the rules engine or by the AI extractor. */
+const ENTITY_TYPES = new Set<GraphNodeType>([
+  'PERSON',
+  'ORGANIZATION',
+  'LOCATION',
+  'DATE',
+  'EVENT',
+  'PRODUCT',
+  'CONCEPT',
+  'NUMBER',
+  'YEAR',
+  'METRIC',
+  'CATEGORY'
+]);
+
+function isDocument(
+  properties: GraphNodeProperties
+): boolean {
+  return (
+    properties.source_id !== undefined &&
+    properties.name !== undefined &&
+    properties.title === undefined
+  );
+}
+
+function isHypothesis(
+  properties: GraphNodeProperties
+): boolean {
+  return (
+    properties.source_id !== undefined &&
+    properties.title !== undefined
+  );
+}
+
+function isPattern(
+  properties: GraphNodeProperties
+): boolean {
+  return (
+    properties.type !== undefined &&
+    properties.description !== undefined &&
+    properties.name === undefined
+  );
+}
+
+/** Stable Cytoscape id for a node, shared by nodes and edges. */
+export function getNodeId(
+  properties: GraphNodeProperties | null | undefined
+): string {
+
+  if (!properties) {
+    return '';
+  }
+
+  if (isDocument(properties)) {
+    return `document-${properties.source_id}`;
+  }
+
+  if (isHypothesis(properties)) {
+    return `hypothesis-${properties.source_id}-${properties.title}`;
+  }
+
+  if (properties.name && properties.type) {
+    return `entity-${properties.name}-${properties.type}`;
+  }
+
+  if (isPattern(properties)) {
+    return `pattern-${properties.type}-${properties.description}`;
+  }
+
+  return JSON.stringify(properties);
+}
+
+/** Human readable label of a node. */
+export function getNodeLabel(
+  properties: GraphNodeProperties | null | undefined,
+  labels: string[] = []
+): string {
+
+  if (!properties) {
+    return 'Nodo';
+  }
+
+  const label =
+    properties.name ??
+    properties.title ??
+    properties.type ??
+    labels[0];
+
+  return label ? String(label) : 'Nodo';
+}
+
+/** Category used to color, size and filter a node. */
+export function getNodeType(
+  properties: GraphNodeProperties | null | undefined,
+  labels: string[] = []
+): GraphNodeType {
+
+  if (!properties) {
+    return 'ENTITY';
+  }
+
+  if (isDocument(properties) || labels.includes('Document')) {
+    return 'DOCUMENT';
+  }
+
+  if (isHypothesis(properties) || labels.includes('Hypothesis')) {
+    return 'HYPOTHESIS';
+  }
+
+  if (isPattern(properties) || labels.includes('Pattern')) {
+    return 'PATTERN';
+  }
+
+  const type = String(properties.type ?? '').toUpperCase() as GraphNodeType;
+
+  if (ENTITY_TYPES.has(type)) {
+    return type;
+  }
+
+  return 'ENTITY';
+}

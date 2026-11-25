@@ -21,6 +21,12 @@ import {
   GraphService
 } from '../../core/services/graph';
 
+import {
+  getNodeId,
+  getNodeLabel,
+  getNodeType
+} from './graph-utils';
+
 @Component({
   selector: 'app-graph',
   standalone: true,
@@ -340,18 +346,18 @@ export class Graph implements AfterViewInit {
         node.properties || {};
 
       const id =
-        this.getNodeId(
+        getNodeId(
           properties
         );
 
       const label =
-        this.getNodeLabel(
+        getNodeLabel(
           properties,
           node.labels
         );
 
       const nodeType =
-        this.getNodeType(
+        getNodeType(
           properties,
           node.labels
         );
@@ -386,12 +392,12 @@ export class Graph implements AfterViewInit {
     ) {
 
       const source =
-        this.getNodeId(
+        getNodeId(
           relationship.source
         );
 
       const target =
-        this.getNodeId(
+        getNodeId(
           relationship.target
         );
 
@@ -739,200 +745,6 @@ export class Graph implements AfterViewInit {
 
       }
     );
-
-  }
-
-  private getNodeId(
-    properties: any
-  ): string {
-
-    if (!properties) {
-
-      return '';
-
-    }
-
-    if (
-      properties.source_id !== undefined &&
-      properties.name
-    ) {
-
-      return `document-${properties.source_id}`;
-
-    }
-
-    if (
-      properties.source_id !== undefined &&
-      properties.title
-    ) {
-
-      return (
-        `hypothesis-${properties.source_id}-${properties.title}`
-      );
-
-    }
-
-    if (
-      properties.name &&
-      properties.type
-    ) {
-
-      return (
-        `entity-${properties.name}-${properties.type}`
-      );
-
-    }
-
-    if (
-      properties.type &&
-      properties.description
-    ) {
-
-      return (
-        `pattern-${properties.type}-${properties.description}`
-      );
-
-    }
-
-    return JSON.stringify(
-      properties
-    );
-
-  }
-
-  private getNodeLabel(
-    properties: any,
-    labels: string[]
-  ): string {
-
-    if (!properties) {
-
-      return 'Nodo';
-
-    }
-
-    if (properties.name) {
-
-      return properties.name;
-
-    }
-
-    if (properties.title) {
-
-      return properties.title;
-
-    }
-
-    if (properties.type) {
-
-      return properties.type;
-
-    }
-
-    if (
-      labels &&
-      labels.length > 0
-    ) {
-
-      return labels[0];
-
-    }
-
-    return 'Nodo';
-
-  }
-
-  private getNodeType(
-    properties: any,
-    labels: string[]
-  ): string {
-
-    if (!properties) {
-
-      return 'ENTITY';
-
-    }
-
-    if (
-      properties.source_id !== undefined &&
-      properties.name
-    ) {
-
-      return 'DOCUMENT';
-
-    }
-
-    if (
-      properties.source_id !== undefined &&
-      properties.title
-    ) {
-
-      return 'HYPOTHESIS';
-
-    }
-
-    if (
-      properties.type &&
-      properties.description
-    ) {
-
-      return 'PATTERN';
-
-    }
-
-    if (
-      properties.type === 'NUMBER'
-    ) {
-
-      return 'NUMBER';
-
-    }
-
-    if (
-      properties.type === 'METRIC'
-    ) {
-
-      return 'METRIC';
-
-    }
-
-    if (
-      properties.name &&
-      properties.type
-    ) {
-
-      return 'ENTITY';
-
-    }
-
-    if (
-      labels &&
-      labels.includes('Document')
-    ) {
-
-      return 'DOCUMENT';
-
-    }
-
-    if (
-      labels &&
-      labels.includes('Hypothesis')
-    ) {
-
-      return 'HYPOTHESIS';
-
-    }
-
-    if (
-      labels &&
-      labels.includes('Pattern')
-    ) {
-
-      return 'PATTERN';
-
-    }
-
-    return 'ENTITY';
 
   }
 
