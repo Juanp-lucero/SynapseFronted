@@ -130,12 +130,21 @@
             @for (item of legend; track item.type) {
 
               <li>
-                <span
-                  class="legend-dot"
-                  [style.background-color]="item.color"
-                ></span>
-                {{ item.label }}
-                <small>{{ item.count }}</small>
+                <button
+                  type="button"
+                  class="legend-item"
+                  [class.legend-off]="!isTypeVisible(item.type)"
+                  [attr.aria-pressed]="isTypeVisible(item.type)"
+                  [title]="isTypeVisible(item.type) ? 'Ocultar ' + item.label : 'Mostrar ' + item.label"
+                  (click)="toggleType(item.type)"
+                >
+                  <span
+                    class="legend-dot"
+                    [style.background-color]="item.color"
+                  ></span>
+                  {{ item.label }}
+                  <small>{{ item.count }}</small>
+                </button>
               </li>
 
             }

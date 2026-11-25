@@ -73,6 +73,9 @@ export class Graph implements AfterViewInit {
     count: number;
   }[] = [];
 
+  /** Node categories hidden by the user from the legend. */
+  hiddenTypes = new Set<GraphNodeType>();
+
   private cy: cytoscape.Core | null = null;
 
   private viewReady = false;
@@ -322,6 +325,57 @@ export class Graph implements AfterViewInit {
       NODE_TYPE_STYLES[type as GraphNodeType]?.label ??
       type
     );
+
+  }
+
+
+  isTypeVisible(
+    type: GraphNodeType
+  ): boolean {
+
+    return !this.hiddenTypes.has(type);
+
+  }
+
+
+  toggleType(
+    type: GraphNodeType
+  ): void {
+
+    if (this.hiddenTypes.has(type)) {
+      this.hiddenTypes.delete(type);
+    } else {
+      this.hiddenTypes.add(type);
+    }
+
+    this.applyTypeFilter();
+
+  }
+
+
+  private applyTypeFilter(): void {
+
+    if (!this.cy) {
+      return;
+    }
+
+    this.cy.batch(() => {
+
+      this.cy!.nodes().forEach(node => {
+
+        const hidden =
+          this.hiddenTypes.has(
+            node.data('nodeType')
+          );
+
+        node.style(
+          'display',
+          hidden ? 'none' : 'element'
+        );
+
+      });
+
+    });
 
   }
 
@@ -654,6 +708,8 @@ export class Graph implements AfterViewInit {
         ]
 
       });
+
+    this.applyTypeFilter();
 
     this.cy.on(
       'tap',

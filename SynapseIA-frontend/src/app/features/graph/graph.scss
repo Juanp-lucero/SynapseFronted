@@ -643,3 +643,25 @@
   height: 10px;
   border-radius: 50%;
 }
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.legend-item:hover {
+  background: #f1f5f9;
+}
+
+.legend-off {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
