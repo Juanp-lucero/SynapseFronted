@@ -131,6 +131,31 @@
           </form>
 
 
+          <div
+            class="graph-controls"
+            role="group"
+            aria-label="Controles del grafo"
+          >
+
+            <button
+              type="button"
+              (click)="fitGraph()"
+              [disabled]="!graphData?.nodes?.length"
+            >
+              Ajustar
+            </button>
+
+            <button
+              type="button"
+              (click)="relayoutGraph()"
+              [disabled]="!graphData?.nodes?.length"
+            >
+              Reorganizar
+            </button>
+
+          </div>
+
+
           @if (graphData) {
 
             <div class="node-counter">

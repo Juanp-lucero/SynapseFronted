@@ -391,6 +391,38 @@ export class Graph implements AfterViewInit {
   }
 
 
+  /** Zoom so that every visible node fits in the canvas. */
+  fitGraph(): void {
+
+    this.cy?.animate({
+      fit: {
+        eles: this.cy.elements(':visible'),
+        padding: 60
+      },
+      duration: 400
+    });
+
+  }
+
+
+  /** Run the force-directed layout again on the visible nodes. */
+  relayoutGraph(): void {
+
+    this.cy
+      ?.elements(':visible')
+      .layout({
+        name: 'cose',
+        animate: true,
+        padding: 60,
+        nodeRepulsion: () => 12000,
+        idealEdgeLength: () => 140,
+        gravity: 0.25
+      })
+      .run();
+
+  }
+
+
   isTypeVisible(
     type: GraphNodeType
   ): boolean {
