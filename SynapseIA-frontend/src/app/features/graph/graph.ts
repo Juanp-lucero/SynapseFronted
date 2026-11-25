@@ -73,6 +73,10 @@ export class Graph implements AfterViewInit {
     count: number;
   }[] = [];
 
+  searchTerm = '';
+
+  searchMessage = '';
+
   /** Node categories hidden by the user from the legend. */
   hiddenTypes = new Set<GraphNodeType>();
 
@@ -325,6 +329,64 @@ export class Graph implements AfterViewInit {
       NODE_TYPE_STYLES[type as GraphNodeType]?.label ??
       type
     );
+
+  }
+
+
+  updateSearch(
+    value: string
+  ): void {
+
+    this.searchTerm = value;
+
+    this.searchMessage = '';
+
+  }
+
+
+  /** Select and center the first visible node whose label matches. */
+  searchNode(): void {
+
+    const term =
+      this.searchTerm.trim().toLowerCase();
+
+    if (!this.cy || !term) {
+      return;
+    }
+
+    const match =
+      this.cy
+        .nodes()
+        .filter(node => node.style('display') !== 'none')
+        .filter(node =>
+          String(node.data('label') ?? '')
+            .toLowerCase()
+            .includes(term)
+        )
+        .first();
+
+    if (match.empty()) {
+
+      this.searchMessage =
+        'No se encontró ningún nodo con ese nombre.';
+
+      this.changeDetectorRef.detectChanges();
+
+      return;
+
+    }
+
+    this.cy.elements().unselect();
+
+    match.select();
+
+    this.cy.animate({
+      center: { eles: match },
+      zoom: Math.max(this.cy.zoom(), 1.2),
+      duration: 400
+    });
+
+    match.emit('tap');
 
   }
 
