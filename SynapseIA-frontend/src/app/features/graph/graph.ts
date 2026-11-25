@@ -688,6 +688,50 @@ export class Graph implements AfterViewInit {
 
     this.cy.on(
       'tap',
+      'edge',
+      (event) => {
+
+        const data =
+          event.target.data();
+
+        const sourceLabel =
+          event.target.source().data('label');
+
+        const targetLabel =
+          event.target.target().data('label');
+
+        const details =
+          data.details || {};
+
+        const properties: Record<string, unknown> = {
+          relación: formatRelationLabel(data.relation),
+          origen: sourceLabel,
+          destino: targetLabel
+        };
+
+        if (Array.isArray(details.shared_entities)) {
+          properties['entidades compartidas'] =
+            details.shared_entities.join(', ');
+        }
+
+        this.ngZone.run(() => {
+
+          this.selectedNode = {
+            id: data.id,
+            label: `${sourceLabel} → ${targetLabel}`,
+            type: 'RELACIÓN',
+            properties
+          };
+
+          this.changeDetectorRef.detectChanges();
+
+        });
+
+      }
+    );
+
+    this.cy.on(
+      'tap',
       (event) => {
 
         if (
