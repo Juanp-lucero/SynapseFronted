@@ -129,10 +129,6 @@ export class Analysis implements OnInit {
           data: AnalysisResult[]
         ) => {
 
-          console.log(
-            'Resultados del análisis:',
-            data
-          );
 
           this.analyses = data;
 

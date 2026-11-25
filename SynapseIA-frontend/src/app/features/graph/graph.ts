@@ -254,10 +254,6 @@ export class Graph implements AfterViewInit {
     data: any
   ): void {
 
-    console.log(
-      'Datos del grafo:',
-      data
-    );
 
     this.ngZone.run(() => {
 
@@ -862,10 +858,6 @@ export class Graph implements AfterViewInit {
 
         };
 
-        console.log(
-          'Nodo seleccionado:',
-          selectedNode
-        );
 
         this.ngZone.run(() => {
 
