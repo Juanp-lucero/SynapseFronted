@@ -11,9 +11,19 @@ Desplegado en Vercel:
 | Estado de la API | https://synapse-backend-eight.vercel.app/health | |
 | Documentación de la API | https://synapse-backend-eight.vercel.app/docs | |
 
+## Cuenta de prueba
+
+Para revisar Synapse IA sin registrarse:
+
+| Aplicación | Correo | Contraseña |
+|---|---|---|
+| https://synapse-frontend-alpha-khaki.vercel.app | `profesor.demo@example.com` | `ProfeDemo2026*` |
+
+Es una cuenta de demostración creada solo para la evaluación; no contiene datos personales.
+
 ## Cómo probarlo
 
-1. Entra a https://synapse-frontend-alpha-khaki.vercel.app e inicia sesión con la cuenta de prueba (o crea una cuenta en **Crear cuenta**).
+1. Entra a https://synapse-frontend-alpha-khaki.vercel.app e inicia sesión con la [cuenta de prueba](#cuenta-de-prueba) (o crea una cuenta en **Crear cuenta**).
 2. **Proyectos → Nuevo proyecto**: por ejemplo `Investigación Colombia`, y pulsa **Crear proyecto**.
 3. **Fuentes**: elige el proyecto, selecciona el documento y pulsa **Cargar fuente**. Sirve un PDF, DOCX, TXT o CSV. Para una prueba rápida, guarda este texto como `prueba.txt`:
 
