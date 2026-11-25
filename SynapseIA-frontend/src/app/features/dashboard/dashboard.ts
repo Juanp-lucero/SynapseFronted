@@ -158,10 +158,6 @@ export class Dashboard implements OnInit {
           data: DashboardStats
         ) => {
 
-          console.log(
-            'Estadísticas del Dashboard:',
-            data
-          );
 
           this.statistics =
             data;
@@ -221,10 +217,6 @@ export class Dashboard implements OnInit {
           data: DashboardActivity[]
         ) => {
 
-          console.log(
-            'Actividad reciente:',
-            data
-          );
 
           this.activities =
             data;

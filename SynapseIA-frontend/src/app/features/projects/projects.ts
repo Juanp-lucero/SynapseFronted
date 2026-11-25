@@ -88,10 +88,6 @@ export class Projects implements OnInit {
           data: Project[]
         ) => {
 
-          console.log(
-            'Proyectos:',
-            data
-          );
 
           this.projects = data;
 
@@ -211,10 +207,6 @@ export class Projects implements OnInit {
           project: Project
         ) => {
 
-          console.log(
-            'Proyecto creado:',
-            project
-          );
 
           this.projects = [
             project,

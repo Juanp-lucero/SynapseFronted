@@ -100,10 +100,6 @@ export class ProjectDetail implements OnInit {
 
         next: (project: Project) => {
 
-          console.log(
-            'Proyecto seleccionado:',
-            project
-          );
 
           this.project = project;
 
@@ -163,10 +159,6 @@ export class ProjectDetail implements OnInit {
 
         next: (sources: Source[]) => {
 
-          console.log(
-            'Fuentes del proyecto:',
-            sources
-          );
 
           this.sources = sources;
 

@@ -103,10 +103,6 @@ export class Sources implements OnInit {
           data: Project[]
         ) => {
 
-          console.log(
-            'Proyectos disponibles:',
-            data
-          );
 
           this.projects = data;
 
@@ -190,10 +186,6 @@ export class Sources implements OnInit {
           data: Source[]
         ) => {
 
-          console.log(
-            'Fuentes:',
-            data
-          );
 
           this.sources = data;
 
@@ -322,10 +314,6 @@ export class Sources implements OnInit {
           source: Source
         ) => {
 
-          console.log(
-            'Fuente creada:',
-            source
-          );
 
           this.sources = [
             source,
@@ -407,10 +395,6 @@ export class Sources implements OnInit {
           result
         ) => {
 
-          console.log(
-            'Análisis completado:',
-            result
-          );
 
           this.analyzingSourceId =
             null;
