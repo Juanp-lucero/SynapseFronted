@@ -23,6 +23,10 @@ import {
 } from '../../core/services/graph';
 
 import {
+  GraphNodeType
+} from '../../core/models/graph.models';
+
+import {
   getNodeId,
   getNodeLabel,
   getNodeType,
@@ -58,6 +62,14 @@ export class Graph implements AfterViewInit {
     'Explora las conexiones descubiertas por Synapse IA.';
 
   graphContext = 'Explorador general';
+
+  /** Node categories present in the current graph, for the legend. */
+  legend: {
+    type: GraphNodeType;
+    label: string;
+    color: string;
+    count: number;
+  }[] = [];
 
   private cy: cytoscape.Core | null = null;
 
@@ -433,6 +445,11 @@ export class Graph implements AfterViewInit {
 
     }
 
+    this.legend =
+      this.buildLegend(
+        elements
+      );
+
     this.cy =
       cytoscape({
 
@@ -647,6 +664,31 @@ export class Graph implements AfterViewInit {
         }
       })
     );
+
+  }
+
+
+  private buildLegend(
+    elements: cytoscape.ElementDefinition[]
+  ): typeof this.legend {
+
+    const counts = new Map<GraphNodeType, number>();
+
+    for (const element of elements) {
+      const type = element.data['nodeType'] as GraphNodeType | undefined;
+      if (type) {
+        counts.set(type, (counts.get(type) ?? 0) + 1);
+      }
+    }
+
+    return [...counts.entries()]
+      .map(([type, count]) => ({
+        type,
+        count,
+        label: NODE_TYPE_STYLES[type].label,
+        color: NODE_TYPE_STYLES[type].color
+      }))
+      .sort((first, second) => second.count - first.count);
 
   }
 

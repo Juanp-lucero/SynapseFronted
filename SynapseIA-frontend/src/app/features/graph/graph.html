@@ -120,6 +120,31 @@
         </div>
 
 
+        @if (legend.length) {
+
+          <ul
+            class="graph-legend"
+            aria-label="Leyenda del grafo"
+          >
+
+            @for (item of legend; track item.type) {
+
+              <li>
+                <span
+                  class="legend-dot"
+                  [style.background-color]="item.color"
+                ></span>
+                {{ item.label }}
+                <small>{{ item.count }}</small>
+              </li>
+
+            }
+
+          </ul>
+
+        }
+
+
         <div
           #graphContainer
           class="graph-container"
