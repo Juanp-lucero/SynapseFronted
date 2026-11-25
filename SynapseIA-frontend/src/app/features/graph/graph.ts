@@ -733,17 +733,21 @@ export class Graph implements AfterViewInit {
               'label':
                 'data(label)',
 
+              // Labels sit under the node so long names stay readable.
               'color':
-                '#ffffff',
+                '#1e293b',
 
               'text-valign':
-                'center',
+                'bottom',
 
               'text-halign':
                 'center',
 
+              'text-margin-y':
+                6,
+
               'font-size':
-                10,
+                11,
 
               'font-weight':
                 'bold',
@@ -752,7 +756,16 @@ export class Graph implements AfterViewInit {
                 'wrap',
 
               'text-max-width':
-                '85px',
+                '140px',
+
+              'text-background-color':
+                '#ffffff',
+
+              'text-background-opacity':
+                0.8,
+
+              'text-background-padding':
+                '2px',
 
               'width':
                 42,
