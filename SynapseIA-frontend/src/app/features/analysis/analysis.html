@@ -194,6 +194,67 @@
     </section>
 
 
+    <section
+      class="ai-panel"
+      aria-live="polite"
+    >
+
+      <div class="ai-panel-header">
+
+        <div>
+
+          <span class="card-tag">
+            INTELIGENCIA ARTIFICIAL
+          </span>
+
+          <h2>
+            Interpretación con IA
+          </h2>
+
+          <p>
+            Resumen basado únicamente en la evidencia extraída de esta fuente.
+          </p>
+
+        </div>
+
+        <button
+          class="primary-button"
+          type="button"
+          (click)="generateSummary()"
+          [disabled]="!aiConfigured || summaryLoading"
+        >
+
+          @if (summaryLoading) {
+            Generando...
+          } @else {
+            Generar resumen
+          }
+
+        </button>
+
+      </div>
+
+      @if (aiConfigured === false) {
+        <p class="ai-muted">
+          La IA no está configurada en el servidor. El análisis por reglas sigue disponible.
+        </p>
+      }
+
+      @if (summaryError) {
+        <p class="ai-error">
+          {{ summaryError }}
+        </p>
+      }
+
+      @if (aiSummary) {
+        <div class="ai-summary">
+          {{ aiSummary }}
+        </div>
+      }
+
+    </section>
+
+
     <section class="results-grid">
 
       <article class="result-card">

@@ -14,6 +14,10 @@ import {
   AnalysisService
 } from '../../core/services/analysis';
 
+import {
+  AiService
+} from '../../core/services/ai';
+
 
 @Component({
   selector: 'app-analysis',
@@ -36,15 +40,27 @@ export class Analysis implements OnInit {
 
   errorMessage = '';
 
+  /** `null` while the AI status is unknown. */
+  aiConfigured: boolean | null = null;
+
+  aiSummary = '';
+
+  summaryLoading = false;
+
+  summaryError = '';
+
 
   constructor(
     private route: ActivatedRoute,
     private analysisService: AnalysisService,
+    private aiService: AiService,
     private changeDetectorRef: ChangeDetectorRef
   ) {}
 
 
   ngOnInit(): void {
+
+    this.loadAiStatus();
 
     this.route.paramMap.subscribe(
       params => {
@@ -137,6 +153,84 @@ export class Analysis implements OnInit {
             'No fue posible obtener el análisis.';
 
           this.loading = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  loadAiStatus(): void {
+
+    this.aiService
+      .getStatus()
+      .subscribe({
+
+        next: status => {
+
+          this.aiConfigured =
+            status.configured;
+
+          this.changeDetectorRef.detectChanges();
+
+        },
+
+        error: () => {
+
+          this.aiConfigured = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  generateSummary(): void {
+
+    if (
+      this.sourceId === null ||
+      this.summaryLoading
+    ) {
+
+      return;
+
+    }
+
+    this.summaryLoading = true;
+
+    this.summaryError = '';
+
+    this.aiService
+      .summarizeSource(
+        this.sourceId
+      )
+      .subscribe({
+
+        next: response => {
+
+          this.aiSummary =
+            response.summary;
+
+          this.summaryLoading = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        },
+
+        error: error => {
+
+          this.summaryLoading = false;
+
+          this.summaryError =
+            error?.status === 503
+              ? 'La IA no está disponible en este momento. Intenta más tarde.'
+              : 'No fue posible generar el resumen con IA.';
 
           this.changeDetectorRef.detectChanges();
 
