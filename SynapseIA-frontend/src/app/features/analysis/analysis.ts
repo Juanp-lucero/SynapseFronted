@@ -112,12 +112,11 @@ export class Analysis implements OnInit {
 
           this.analyses = data;
 
-          if (data.length > 0) {
-
-            this.currentAnalysis =
-              data[data.length - 1];
-
-          }
+          // The API returns analyses newest first.
+          this.currentAnalysis =
+            data.length > 0
+              ? data[0]
+              : null;
 
           this.loading = false;
 
