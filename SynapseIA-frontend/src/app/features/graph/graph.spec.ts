@@ -41,6 +41,8 @@ describe('Graph', () => {
     // Rendering is not needed to check which endpoint is used.
     (component as unknown as { renderGraph: () => void }).renderGraph = () => undefined;
     fixture.detectChanges();
+    // The component loads the graph on the next tick after the view is ready.
+    await new Promise(resolve => setTimeout(resolve));
   }
 
   it('loads the general graph without route params', async () => {
