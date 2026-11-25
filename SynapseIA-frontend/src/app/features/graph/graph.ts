@@ -24,7 +24,8 @@ import {
 import {
   getNodeId,
   getNodeLabel,
-  getNodeType
+  getNodeType,
+  NODE_TYPE_STYLES
 } from './graph-utils';
 
 @Component({
@@ -505,125 +506,7 @@ export class Graph implements AfterViewInit {
 
           },
 
-          {
-
-            selector:
-              'node[nodeType="DOCUMENT"]',
-
-            style: {
-
-              'background-color':
-                '#7c3aed',
-
-              'width':
-                65,
-
-              'height':
-                65,
-
-              'font-size':
-                11
-
-            }
-
-          },
-
-          {
-
-            selector:
-              'node[nodeType="ENTITY"]',
-
-            style: {
-
-              'background-color':
-                '#2563eb'
-
-            }
-
-          },
-
-          {
-
-            selector:
-              'node[nodeType="PATTERN"]',
-
-            style: {
-
-              'background-color':
-                '#16a34a',
-
-              'width':
-                52,
-
-              'height':
-                52
-
-            }
-
-          },
-
-          {
-
-            selector:
-              'node[nodeType="HYPOTHESIS"]',
-
-            style: {
-
-              'background-color':
-                '#f97316',
-
-              'width':
-                58,
-
-              'height':
-                58
-
-            }
-
-          },
-
-          {
-
-            selector:
-              'node[nodeType="NUMBER"]',
-
-            style: {
-
-              'background-color':
-                '#64748b',
-
-              'width':
-                35,
-
-              'height':
-                35,
-
-              'font-size':
-                9
-
-            }
-
-          },
-
-          {
-
-            selector:
-              'node[nodeType="METRIC"]',
-
-            style: {
-
-              'background-color':
-                '#0891b2',
-
-              'width':
-                48,
-
-              'height':
-                48
-
-            }
-
-          },
+          ...this.buildNodeTypeStyles(),
 
           {
 
@@ -744,6 +627,23 @@ export class Graph implements AfterViewInit {
         }
 
       }
+    );
+
+  }
+
+
+  /** One Cytoscape style per node category (color and size). */
+  private buildNodeTypeStyles(): cytoscape.StylesheetJson {
+
+    return Object.entries(NODE_TYPE_STYLES).map(
+      ([type, style]) => ({
+        selector: `node[nodeType="${type}"]`,
+        style: {
+          'background-color': style.color,
+          'width': style.size,
+          'height': style.size
+        }
+      })
     );
 
   }

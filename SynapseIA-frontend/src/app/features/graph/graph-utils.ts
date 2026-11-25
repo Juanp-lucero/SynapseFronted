@@ -124,3 +124,28 @@ export function getNodeType(
 
   return 'ENTITY';
 }
+
+/** Visual settings of every node category. */
+export interface NodeTypeStyle {
+  label: string;
+  color: string;
+  size: number;
+}
+
+export const NODE_TYPE_STYLES: Record<GraphNodeType, NodeTypeStyle> = {
+  DOCUMENT: { label: 'Documento', color: '#7c3aed', size: 65 },
+  HYPOTHESIS: { label: 'Hipótesis', color: '#f97316', size: 58 },
+  PATTERN: { label: 'Patrón', color: '#16a34a', size: 52 },
+  PERSON: { label: 'Persona', color: '#db2777', size: 46 },
+  ORGANIZATION: { label: 'Organización', color: '#2563eb', size: 46 },
+  LOCATION: { label: 'Lugar', color: '#0d9488', size: 44 },
+  EVENT: { label: 'Evento', color: '#ca8a04', size: 44 },
+  PRODUCT: { label: 'Producto', color: '#9333ea', size: 44 },
+  CONCEPT: { label: 'Concepto', color: '#4f46e5', size: 42 },
+  DATE: { label: 'Fecha', color: '#475569', size: 38 },
+  METRIC: { label: 'Métrica', color: '#0891b2', size: 48 },
+  CATEGORY: { label: 'Categoría', color: '#65a30d', size: 42 },
+  YEAR: { label: 'Año', color: '#64748b', size: 36 },
+  NUMBER: { label: 'Número', color: '#94a3b8', size: 34 },
+  ENTITY: { label: 'Entidad', color: '#6366f1', size: 42 }
+};
