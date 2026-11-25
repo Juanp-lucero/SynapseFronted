@@ -361,9 +361,14 @@
                 {{ $index + 1 }}
               </span>
 
-              <span>
-                {{ formatValue(pattern) }}
-              </span>
+              <div class="relation-body">
+                <span class="type-chip pattern-chip">
+                  {{ formatRelation(pattern.type) }}
+                </span>
+                <span>
+                  {{ pattern.description || formatValue(pattern) }}
+                </span>
+              </div>
 
             </div>
 
