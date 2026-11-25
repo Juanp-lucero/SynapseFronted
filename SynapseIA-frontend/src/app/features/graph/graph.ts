@@ -95,7 +95,9 @@ export class Graph implements AfterViewInit {
 
     this.viewReady = true;
 
-    this.loadGraph();
+    // Load on the next tick so the first change detection pass is not
+    // modified while it runs (NG0100).
+    setTimeout(() => this.loadGraph());
 
   }
 
@@ -830,6 +832,9 @@ export class Graph implements AfterViewInit {
       });
 
     this.applyTypeFilter();
+
+    // The legend is built after the view was checked: render it now.
+    this.changeDetectorRef.detectChanges();
 
     this.cy.on(
       'tap',
