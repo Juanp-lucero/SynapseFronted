@@ -1,4 +1,8 @@
 import {
+  formatRelationLabel
+} from '../graph/graph-utils';
+
+import {
   ChangeDetectorRef,
   Component,
   OnInit
@@ -378,14 +382,12 @@ export class Analysis implements OnInit {
   }
 
 
-  /** Turns `COMPITE_CON` into `compite con` for display. */
+  /** Spanish label of a relation, e.g. `RELATED_TO` -> `relacionado con`. */
   formatRelation(
     relation: string
   ): string {
 
-    return (relation || 'RELATED_TO')
-      .replace(/_/g, ' ')
-      .toLowerCase();
+    return formatRelationLabel(relation || 'RELATED_TO');
 
   }
 
