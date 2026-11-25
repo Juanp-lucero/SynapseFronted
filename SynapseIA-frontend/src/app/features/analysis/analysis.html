@@ -228,9 +228,22 @@
                 {{ $index + 1 }}
               </span>
 
-              <span>
-                {{ formatValue(entity) }}
+              <span class="entity-value">
+                {{ entity.value }}
               </span>
+
+              <span class="type-chip">
+                {{ entity.type }}
+              </span>
+
+              @if (entity.origin === 'ai') {
+                <span
+                  class="ai-badge"
+                  title="Extraído por la IA y verificado en el documento"
+                >
+                  IA
+                </span>
+              }
 
             </div>
 
