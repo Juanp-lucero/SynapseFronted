@@ -4,7 +4,8 @@ import {
   getNodeLabel,
   getNodeType,
   isStructuralRelation,
-  NODE_TYPE_STYLES
+  NODE_TYPE_STYLES,
+  NOISY_NODE_TYPES
 } from './graph-utils';
 
 describe('graph-utils', () => {
@@ -65,5 +66,11 @@ describe('graph-utils', () => {
       expect(style.size).toBeGreaterThan(0);
       expect(style.label.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('NOISY_NODE_TYPES', () => {
+  it('only hides loose numbers by default', () => {
+    expect(NOISY_NODE_TYPES).toEqual(['NUMBER']);
   });
 });

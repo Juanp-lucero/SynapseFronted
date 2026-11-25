@@ -125,6 +125,9 @@ export function getNodeType(
   return 'ENTITY';
 }
 
+/** Categories that start hidden because they usually flood the graph. */
+export const NOISY_NODE_TYPES: GraphNodeType[] = ['NUMBER'];
+
 /** Visual settings of every node category. */
 export interface NodeTypeStyle {
   label: string;

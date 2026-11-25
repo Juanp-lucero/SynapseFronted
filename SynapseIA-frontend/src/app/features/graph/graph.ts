@@ -32,7 +32,8 @@ import {
   getNodeType,
   formatRelationLabel,
   isStructuralRelation,
-  NODE_TYPE_STYLES
+  NODE_TYPE_STYLES,
+  NOISY_NODE_TYPES
 } from './graph-utils';
 
 @Component({
@@ -79,6 +80,9 @@ export class Graph implements AfterViewInit {
 
   /** Node categories hidden by the user from the legend. */
   hiddenTypes = new Set<GraphNodeType>();
+
+  /** Defaults are applied once, so later user choices are respected. */
+  private noisyDefaultsApplied = false;
 
   private cy: cytoscape.Core | null = null;
 
@@ -519,6 +523,33 @@ export class Graph implements AfterViewInit {
 
 
   /**
+   * Loose numbers can be hundreds of nodes and hide the real connections.
+   * Start with them hidden when the graph has other entities; the legend
+   * still lets the user show them.
+   */
+  private hideNoisyTypesByDefault(): void {
+
+    if (this.noisyDefaultsApplied) {
+      return;
+    }
+
+    const types = new Set(this.legend.map(item => item.type));
+
+    const hasMeaningfulEntities =
+      [...types].some(type => !NOISY_NODE_TYPES.includes(type) && type !== 'DOCUMENT');
+
+    if (hasMeaningfulEntities) {
+      NOISY_NODE_TYPES
+        .filter(type => types.has(type))
+        .forEach(type => this.hiddenTypes.add(type));
+    }
+
+    this.noisyDefaultsApplied = true;
+
+  }
+
+
+  /**
    * Opening or closing the side panel changes the canvas width; Cytoscape
    * must recompute its size or taps land on the wrong coordinates.
    */
@@ -661,6 +692,8 @@ export class Graph implements AfterViewInit {
       this.buildLegend(
         elements
       );
+
+    this.hideNoisyTypesByDefault();
 
     this.cy =
       cytoscape({
@@ -951,6 +984,8 @@ export class Graph implements AfterViewInit {
               null;
 
             this.changeDetectorRef.detectChanges();
+
+            this.resizeCanvas();
 
           });
 
