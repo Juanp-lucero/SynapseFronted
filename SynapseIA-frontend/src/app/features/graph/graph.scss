@@ -114,7 +114,12 @@
   align-items: center;
   justify-content: space-between;
 
+  /* The bar itself lets drags reach the graph, but its controls stay clickable. */
   pointer-events: none;
+}
+
+.graph-toolbar > * {
+  pointer-events: auto;
 }
 
 .toolbar-info,
