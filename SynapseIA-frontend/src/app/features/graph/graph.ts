@@ -313,6 +313,19 @@ export class Graph implements AfterViewInit {
 
   }
 
+  /** Spanish name of a node category, e.g. `ORGANIZATION` -> `Organización`. */
+  typeLabel(
+    type: string
+  ): string {
+
+    return (
+      NODE_TYPE_STYLES[type as GraphNodeType]?.label ??
+      type
+    );
+
+  }
+
+
   closeNodePanel(): void {
 
     this.ngZone.run(() => {
