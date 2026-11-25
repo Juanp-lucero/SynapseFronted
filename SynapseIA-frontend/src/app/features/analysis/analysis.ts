@@ -175,6 +175,20 @@ export class Analysis implements OnInit {
   }
 
 
+  /** Confidence (0-1) as a whole percentage between 0 and 100. */
+  confidencePercent(
+    confidence: number | undefined
+  ): number {
+
+    const value = Number(confidence) || 0;
+
+    return Math.round(
+      Math.min(Math.max(value, 0), 1) * 100
+    );
+
+  }
+
+
   /** Turns `COMPITE_CON` into `compite con` for display. */
   formatRelation(
     relation: string

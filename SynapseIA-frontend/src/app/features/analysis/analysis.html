@@ -412,15 +412,45 @@
                 {{ $index + 1 }}
               </span>
 
-              <div>
+              <div class="hypothesis-body">
 
                 <strong>
-                  Hipótesis {{ $index + 1 }}
+                  {{ hypothesis.title || 'Hipótesis ' + ($index + 1) }}
+                  @if (hypothesis.origin === 'ai') {
+                    <span class="ai-badge">IA</span>
+                  }
                 </strong>
 
-                <p>
-                  {{ formatValue(hypothesis) }}
-                </p>
+                @if (hypothesis.description) {
+                  <p>
+                    {{ hypothesis.description }}
+                  </p>
+                }
+
+                @if (hypothesis.confidence !== undefined) {
+                  <div
+                    class="confidence"
+                    [attr.aria-label]="'Confianza ' + confidencePercent(hypothesis.confidence) + '%'"
+                  >
+                    <div class="confidence-track">
+                      <div
+                        class="confidence-fill"
+                        [style.width.%]="confidencePercent(hypothesis.confidence)"
+                      ></div>
+                    </div>
+                    <span>
+                      Confianza {{ confidencePercent(hypothesis.confidence) }}%
+                    </span>
+                  </div>
+                }
+
+                @if (hypothesis.evidence?.length) {
+                  <ul class="evidence-list">
+                    @for (fragment of hypothesis.evidence; track $index) {
+                      <li>“{{ fragment }}”</li>
+                    }
+                  </ul>
+                }
 
               </div>
 

@@ -441,3 +441,40 @@
   color: #64748b;
   font-style: italic;
 }
+
+.hypothesis-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.confidence {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.confidence-track {
+  flex: 1;
+  max-width: 220px;
+  height: 6px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316, #16a34a);
+}
+
+.evidence-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #64748b;
+  font-size: 13px;
+  font-style: italic;
+}
