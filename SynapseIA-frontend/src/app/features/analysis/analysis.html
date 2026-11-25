@@ -292,9 +292,27 @@
                 {{ $index + 1 }}
               </span>
 
-              <span>
-                {{ formatValue(relation) }}
-              </span>
+              <div class="relation-body">
+
+                <span class="relation-line">
+                  <strong>{{ relation.source }}</strong>
+                  <span class="relation-name">
+                    {{ formatRelation(relation.relation) }}
+                  </span>
+                  <strong>{{ relation.target }}</strong>
+                </span>
+
+                @if (relation.evidence) {
+                  <small class="evidence">
+                    “{{ relation.evidence }}”
+                  </small>
+                }
+
+              </div>
+
+              @if (relation.origin === 'ai') {
+                <span class="ai-badge">IA</span>
+              }
 
             </div>
 

@@ -414,3 +414,30 @@
   font-size: 10px;
   font-weight: 800;
 }
+
+.relation-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.relation-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.relation-name {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+}
+
+.evidence {
+  color: #64748b;
+  font-style: italic;
+}

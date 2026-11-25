@@ -175,6 +175,18 @@ export class Analysis implements OnInit {
   }
 
 
+  /** Turns `COMPITE_CON` into `compite con` for display. */
+  formatRelation(
+    relation: string
+  ): string {
+
+    return (relation || 'RELATED_TO')
+      .replace(/_/g, ' ')
+      .toLowerCase();
+
+  }
+
+
   formatValue(
     value: any
   ): string {
