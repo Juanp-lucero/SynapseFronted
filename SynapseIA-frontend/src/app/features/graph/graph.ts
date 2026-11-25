@@ -511,7 +511,20 @@ export class Graph implements AfterViewInit {
 
       this.changeDetectorRef.detectChanges();
 
+      this.resizeCanvas();
+
     });
+
+  }
+
+
+  /**
+   * Opening or closing the side panel changes the canvas width; Cytoscape
+   * must recompute its size or taps land on the wrong coordinates.
+   */
+  private resizeCanvas(): void {
+
+    setTimeout(() => this.cy?.resize(), 300);
 
   }
 
@@ -871,6 +884,8 @@ export class Graph implements AfterViewInit {
 
           this.changeDetectorRef.detectChanges();
 
+          this.resizeCanvas();
+
         });
 
       }
@@ -914,6 +929,8 @@ export class Graph implements AfterViewInit {
           };
 
           this.changeDetectorRef.detectChanges();
+
+          this.resizeCanvas();
 
         });
 
