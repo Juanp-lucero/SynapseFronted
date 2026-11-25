@@ -58,6 +58,8 @@ describe('graph-utils', () => {
   it('formats relation names for display', () => {
     expect(formatRelationLabel('COMPITE_CON')).toBe('compite con');
     expect(formatRelationLabel(undefined)).toBe('');
+    expect(formatRelationLabel('RELATED_TO')).toBe('relacionado con');
+    expect(formatRelationLabel('mentioned_with')).toBe('mencionado con');
   });
 
   it('defines a style for every node category', () => {

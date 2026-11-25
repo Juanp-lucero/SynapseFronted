@@ -166,12 +166,26 @@ export function isStructuralRelation(
   return STRUCTURAL_RELATIONS.has(String(relation ?? '').toUpperCase());
 }
 
-/** `COMPITE_CON` -> `compite con`. */
+/** Spanish names of the relations produced by the backend. */
+const RELATION_LABELS: Record<string, string> = {
+  RELATED_TO: 'relacionado con',
+  MENTIONED_WITH: 'mencionado con',
+  MENTIONED_IN: 'mencionado en',
+  HAS_VALUE: 'tiene valor',
+  HAS_DATA: 'tiene datos de',
+  HAS_TYPE: 'es de tipo',
+  SHARES_ENTITIES_WITH: 'comparte entidades con',
+  DETECTED_IN: 'detectado en',
+  GENERATED_FROM: 'generado desde'
+};
+
+/** `RELATED_TO` -> `relacionado con`; unknown ones `COMPITE_CON` -> `compite con`. */
 export function formatRelationLabel(
   relation: string | null | undefined
 ): string {
-  return String(relation ?? '')
-    .replace(/_/g, ' ')
-    .trim()
-    .toLowerCase();
+  const key = String(relation ?? '').trim().toUpperCase();
+  return (
+    RELATION_LABELS[key] ??
+    key.replace(/_/g, ' ').toLowerCase()
+  );
 }
