@@ -49,6 +49,14 @@ export class Analysis implements OnInit {
 
   summaryError = '';
 
+  question = '';
+
+  aiAnswer = '';
+
+  asking = false;
+
+  askError = '';
+
 
   constructor(
     private route: ActivatedRoute,
@@ -228,15 +236,106 @@ export class Analysis implements OnInit {
           this.summaryLoading = false;
 
           this.summaryError =
-            error?.status === 503
-              ? 'La IA no está disponible en este momento. Intenta más tarde.'
-              : 'No fue posible generar el resumen con IA.';
+            this.describeAiError(
+              error,
+              'No fue posible generar el resumen con IA.'
+            );
 
           this.changeDetectorRef.detectChanges();
 
         }
 
       });
+
+  }
+
+
+  updateQuestion(
+    value: string
+  ): void {
+
+    this.question = value;
+
+  }
+
+
+  askQuestion(): void {
+
+    const question =
+      this.question.trim();
+
+    if (
+      this.sourceId === null ||
+      this.asking ||
+      question.length < 3
+    ) {
+
+      return;
+
+    }
+
+    this.asking = true;
+
+    this.askError = '';
+
+    this.aiService
+      .askSource(
+        this.sourceId,
+        question
+      )
+      .subscribe({
+
+        next: response => {
+
+          this.aiAnswer =
+            response.answer;
+
+          this.asking = false;
+
+          this.changeDetectorRef.detectChanges();
+
+        },
+
+        error: error => {
+
+          this.asking = false;
+
+          this.askError =
+            this.describeAiError(
+              error,
+              'No fue posible responder la pregunta.'
+            );
+
+          this.changeDetectorRef.detectChanges();
+
+        }
+
+      });
+
+  }
+
+
+  private describeAiError(
+    error: { status?: number } | null,
+    fallback: string
+  ): string {
+
+    if (
+      error?.status === 502 ||
+      error?.status === 503
+    ) {
+
+      return 'La IA no está disponible en este momento. Intenta más tarde.';
+
+    }
+
+    if (error?.status === 404) {
+
+      return 'Primero analiza la fuente para poder usar la IA.';
+
+    }
+
+    return fallback;
 
   }
 

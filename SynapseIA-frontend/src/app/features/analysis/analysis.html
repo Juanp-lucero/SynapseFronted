@@ -252,6 +252,55 @@
         </div>
       }
 
+      <form
+        class="ai-question"
+        (submit)="$event.preventDefault(); askQuestion()"
+      >
+
+        <label for="ai-question-input">
+          Pregunta sobre esta fuente
+        </label>
+
+        <div class="ai-question-row">
+
+          <input
+            id="ai-question-input"
+            type="text"
+            maxlength="1200"
+            placeholder="Ej.: ¿Qué organizaciones aparecen relacionadas?"
+            [value]="question"
+            (input)="updateQuestion($any($event.target).value)"
+            [disabled]="!aiConfigured || asking"
+          />
+
+          <button
+            class="primary-button"
+            type="submit"
+            [disabled]="!aiConfigured || asking || question.trim().length < 3"
+          >
+            @if (asking) {
+              Pensando...
+            } @else {
+              Preguntar
+            }
+          </button>
+
+        </div>
+
+      </form>
+
+      @if (askError) {
+        <p class="ai-error">
+          {{ askError }}
+        </p>
+      }
+
+      @if (aiAnswer) {
+        <div class="ai-summary ai-answer">
+          {{ aiAnswer }}
+        </div>
+      }
+
     </section>
 
 
