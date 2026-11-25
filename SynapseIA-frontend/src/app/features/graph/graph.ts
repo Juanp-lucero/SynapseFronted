@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 
 import {
-  ActivatedRoute
+  ActivatedRoute,
+  RouterLink
 } from '@angular/router';
 
 import {
@@ -32,7 +33,8 @@ import {
   selector: 'app-graph',
   standalone: true,
   imports: [
-    KeyValuePipe
+    KeyValuePipe,
+    RouterLink
   ],
   templateUrl: './graph.html',
   styleUrl: './graph.scss'
