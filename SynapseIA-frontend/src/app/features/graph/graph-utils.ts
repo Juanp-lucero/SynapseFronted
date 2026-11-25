@@ -149,3 +149,26 @@ export const NODE_TYPE_STYLES: Record<GraphNodeType, NodeTypeStyle> = {
   NUMBER: { label: 'Número', color: '#94a3b8', size: 34 },
   ENTITY: { label: 'Entidad', color: '#6366f1', size: 42 }
 };
+
+/** Relations that only describe structure (where something was found). */
+const STRUCTURAL_RELATIONS = new Set([
+  'MENTIONED_IN',
+  'DETECTED_IN',
+  'GENERATED_FROM'
+]);
+
+export function isStructuralRelation(
+  relation: string | null | undefined
+): boolean {
+  return STRUCTURAL_RELATIONS.has(String(relation ?? '').toUpperCase());
+}
+
+/** `COMPITE_CON` -> `compite con`. */
+export function formatRelationLabel(
+  relation: string | null | undefined
+): string {
+  return String(relation ?? '')
+    .replace(/_/g, ' ')
+    .trim()
+    .toLowerCase();
+}

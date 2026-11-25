@@ -30,6 +30,8 @@ import {
   getNodeId,
   getNodeLabel,
   getNodeType,
+  formatRelationLabel,
+  isStructuralRelation,
   NODE_TYPE_STYLES
 } from './graph-utils';
 
@@ -436,8 +438,16 @@ export class Graph implements AfterViewInit {
 
           target,
 
+          relation:
+            relationship.relation,
+
           label:
-            relationship.relation
+            isStructuralRelation(relationship.relation)
+              ? ''
+              : formatRelationLabel(relationship.relation),
+
+          details:
+            relationship.properties || {}
 
         }
 
@@ -546,7 +556,57 @@ export class Graph implements AfterViewInit {
                 'triangle',
 
               'curve-style':
-                'bezier'
+                'bezier',
+
+              'label':
+                'data(label)',
+
+              'font-size':
+                8,
+
+              'color':
+                '#475569',
+
+              'text-rotation':
+                'autorotate',
+
+              'text-background-color':
+                '#ffffff',
+
+              'text-background-opacity':
+                0.85,
+
+              'text-background-padding':
+                '2px'
+
+            }
+
+          },
+
+          {
+
+            selector:
+              'edge[relation="SHARES_ENTITIES_WITH"]',
+
+            style: {
+
+              'width':
+                3,
+
+              'line-color':
+                '#a855f7',
+
+              'line-style':
+                'dashed',
+
+              'target-arrow-shape':
+                'none',
+
+              'label':
+                'comparten entidades',
+
+              'color':
+                '#7e22ce'
 
             }
 
