@@ -97,8 +97,7 @@ export class Analysis implements OnInit {
 
     this.analysisService
       .getSourceAnalysis(
-        this.sourceId,
-        token
+        this.sourceId
       )
       .subscribe({
 

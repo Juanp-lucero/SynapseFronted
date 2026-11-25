@@ -1,37 +1,18 @@
 import { Injectable } from '@angular/core';
 
-import {
-  HttpClient,
-  HttpHeaders
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-import {
-  Observable
-} from 'rxjs';
+import { Observable } from 'rxjs';
+
 import { environment } from '../../../environments/environment';
+import { AnalysisResult } from '../models/analysis.models';
 
+export type { AnalysisResult } from '../models/analysis.models';
 
-export interface AnalysisResult {
-
-  id: number;
-
-  source_id: number;
-
-  status: string;
-
-  entities: any[];
-
-  relations: any[];
-
-  patterns: any[];
-
-  hypotheses: any[];
-
-  created_at: string;
-
-}
-
-
+/**
+ * Runs and reads source analyses. The auth interceptor adds the
+ * access token and renews it when it expires.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -39,58 +20,25 @@ export class AnalysisService {
 
   private apiUrl = environment.apiUrl;
 
-
   constructor(
     private http: HttpClient
   ) {}
 
-
   analyzeSource(
-    sourceId: number,
-    token: string
+    sourceId: number
   ): Observable<AnalysisResult> {
-
-    const headers =
-      this.createHeaders(token);
-
     return this.http.post<AnalysisResult>(
       `${this.apiUrl}/analysis/source/${sourceId}`,
-      {},
-      {
-        headers
-      }
+      {}
     );
-
   }
 
-
+  /** Analyses of a source, newest first. */
   getSourceAnalysis(
-    sourceId: number,
-    token: string
+    sourceId: number
   ): Observable<AnalysisResult[]> {
-
-    const headers =
-      this.createHeaders(token);
-
     return this.http.get<AnalysisResult[]>(
-      `${this.apiUrl}/analysis/source/${sourceId}`,
-      {
-        headers
-      }
+      `${this.apiUrl}/analysis/source/${sourceId}`
     );
-
   }
-
-
-  private createHeaders(
-    token: string
-  ): HttpHeaders {
-
-    return new HttpHeaders({
-      Authorization:
-        `Bearer ${token}`
-    });
-
-  }
-
 }

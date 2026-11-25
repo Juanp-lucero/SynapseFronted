@@ -399,8 +399,7 @@ export class Sources implements OnInit {
 
     this.analysisService
       .analyzeSource(
-        source.id,
-        token
+        source.id
       )
       .subscribe({
 
